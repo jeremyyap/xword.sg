@@ -7,18 +7,23 @@ type Props = {
   input: string;
   cellInfo: Ipuz['puzzle'][number][number];
   isActiveCell: boolean;
-  setActiveCell: (activeCell: {row: number, col: number}) => void;
+  isActiveClue: boolean;
+  onClick: (activeCell: {row: number, col: number}) => void;
 }
 
-export default function CrosswordCell({row, col, cellInfo, isActiveCell, setActiveCell}: Props) {
+export default function CrosswordCell({row, col, cellInfo, isActiveCell, isActiveClue, onClick}: Props) {
   const clueNumber = getClueNumber(cellInfo);
   const isWall = cellInfo === '#';
-  let fill = isWall ? 'black' : 'white';
-  if (isActiveCell) {
+  let fill = 'white';
+  if (isWall) {
+    fill = 'black';
+  } else if (isActiveCell) {
     fill = 'yellow';
+  } else if (isActiveClue) {
+    fill = 'cyan';
   }
   
-  const handleClick = () => setActiveCell({row, col})
+  const handleClick = () => onClick({row, col})
 
   return <g onClick={isWall ? undefined : handleClick}>
     <rect
