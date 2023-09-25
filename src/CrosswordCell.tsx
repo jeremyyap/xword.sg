@@ -5,14 +5,22 @@ type Props = {
   col: number;
   answer: string;
   input: string;
-  cellInfo: Ipuz['puzzle'][number][number]
+  cellInfo: Ipuz['puzzle'][number][number];
+  isActiveCell: boolean;
+  setActiveCell: (activeCell: {row: number, col: number}) => void;
 }
 
-export default function CrosswordCell({row, col, cellInfo}: Props) {
-  const fill = cellInfo === '#' ? 'black' : 'white';
+export default function CrosswordCell({row, col, cellInfo, isActiveCell, setActiveCell}: Props) {
   const clueNumber = getClueNumber(cellInfo);
+  const isWall = cellInfo === '#';
+  let fill = isWall ? 'black' : 'white';
+  if (isActiveCell) {
+    fill = 'yellow';
+  }
+  
+  const handleClick = () => setActiveCell({row, col})
 
-  return <g>
+  return <g onClick={isWall ? undefined : handleClick}>
     <rect
       x={col}
       y={row}
