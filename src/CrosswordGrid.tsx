@@ -54,21 +54,34 @@ export default function CrosswordGrid({ data }: Props) {
   const {row: activeRow, col: activeCol, horizontal} = selection;
   const activeClue = horizontal ? horizontalClues[activeRow][activeCol] : verticalClues[activeRow][activeCol];
 
-  const handleInput = useCallback((e: KeyboardEvent) => {
-    if (/^[a-z0-9]$/i.test(e.key)) {
-      setInputGrid(inputGrid => {
-        const newInputGrid = [...inputGrid];
-        newInputGrid[activeRow][activeCol] = e.key.toUpperCase();
-        return newInputGrid;
+  const handleInput = useCallback((input: string, cell: {row: number, col: number, horizontal: boolean}) => 
+    setInputGrid(inputGrid => {
+      const {row, col} = cell;
+      const newInputGrid = [...inputGrid];
+      newInputGrid[row][col] = input;
+      return newInputGrid;
+    }), []
+  );
+
+  const handleKeydown = useCallback((e: KeyboardEvent) => {
+    if (e.code === 'Backspace') {
+      setSelection(selection => {
+        const newSelection = getPreviousCell(puzzleGrid, selection)
+        handleInput('', newSelection);
+        return newSelection;
       });
+    }
+
+    if (/^[a-z0-9]$/i.test(e.key)) {
+      handleInput(e.key.toUpperCase(), selection);
       setSelection(selection => getNextCell(puzzleGrid, selection));
     }
-  }, [activeRow, activeCol, puzzleGrid]);
+  }, [selection, handleInput, puzzleGrid]);
 
   useEffect(() => {
-    document.addEventListener('keydown', handleInput);
-    return () => document.removeEventListener('keydown', handleInput);
-  }, [handleInput]);
+    document.addEventListener('keydown', handleKeydown);
+    return () => document.removeEventListener('keydown', handleKeydown);
+  }, [handleKeydown]);
 
   const handleClick = ({ row, col }: {row: number, col: number}) => {
     const {row: oldRow, col: oldCol, horizontal: oldHorizontal } = selection;
@@ -117,22 +130,48 @@ function getInitialActiveState(grid: Ipuz['puzzle']): {row: number, col: number,
 }
 
 function getNextCell(grid: Ipuz['puzzle'], current: {row: number, col: number, horizontal: boolean}): {row: number, col: number, horizontal: boolean} {
+  const width = grid[0].length;
+  const height = grid.length;
   let {row, col} = current;
   const { horizontal } = current;
 
   if (horizontal) {
     do {
-      col = (col + 1) % grid[0].length;
+      col = (col + 1) % width;
       if (col === 0) {
-        row = (row + 1) % grid.length;
+        row = (row + 1) % height;
       }
     } while (grid[row][col] == '#');
   } else {
     do {
-      row = (row + 1) % grid.length;
+      row = (row + 1) % height;
       if (row === 0) {
-        col = (col + 1) % grid[0].length;
+        col = (col + 1) % width;
       }
+    } while (grid[row][col] == '#');
+  }
+  return {row, col, horizontal};
+}
+
+function getPreviousCell(grid: Ipuz['puzzle'], current: {row: number, col: number, horizontal: boolean}): {row: number, col: number, horizontal: boolean} {
+  const width = grid[0].length;
+  const height = grid.length;
+  let {row, col} = current;
+  const { horizontal } = current;
+
+  if (horizontal) {
+    do {
+      if (col === 0) {
+        row = (row + height - 1) % height;
+      }
+      col = (col + width - 1) % width;
+    } while (grid[row][col] == '#');
+  } else {
+    do {
+      if (row === 0) {
+        col = (col + width - 1) % width;
+      }
+      row = (row + height - 1) % height;
     } while (grid[row][col] == '#');
   }
   return {row, col, horizontal};
