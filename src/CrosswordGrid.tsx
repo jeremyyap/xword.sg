@@ -61,8 +61,9 @@ export default function CrosswordGrid({ data }: Props) {
         newInputGrid[activeRow][activeCol] = e.key.toUpperCase();
         return newInputGrid;
       });
+      setSelection(selection => getNextCell(puzzleGrid, selection));
     }
-  }, [activeRow, activeCol]);
+  }, [activeRow, activeCol, puzzleGrid]);
 
   useEffect(() => {
     document.addEventListener('keydown', handleInput);
@@ -113,6 +114,28 @@ function getInitialActiveState(grid: Ipuz['puzzle']): {row: number, col: number,
     }
   }
   return {row: -1, col: -1, horizontal: true};
+}
+
+function getNextCell(grid: Ipuz['puzzle'], current: {row: number, col: number, horizontal: boolean}): {row: number, col: number, horizontal: boolean} {
+  let {row, col} = current;
+  const { horizontal } = current;
+
+  if (horizontal) {
+    do {
+      col = (col + 1) % grid[0].length;
+      if (col === 0) {
+        row = (row + 1) % grid.length;
+      }
+    } while (grid[row][col] == '#');
+  } else {
+    do {
+      row = (row + 1) % grid.length;
+      if (row === 0) {
+        col = (col + 1) % grid[0].length;
+      }
+    } while (grid[row][col] == '#');
+  }
+  return {row, col, horizontal};
 }
 
 function getClueNumber(cellInfo: Ipuz['puzzle'][number][number]): number | null {
