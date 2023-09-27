@@ -11,7 +11,7 @@ type Props = {
   onClick: (activeCell: {row: number, col: number}) => void;
 }
 
-export default function CrosswordCell({row, col, cellInfo, isActiveCell, isActiveClue, onClick}: Props) {
+export default function CrosswordCell({row, col, cellInfo, isActiveCell, isActiveClue, input, onClick}: Props) {
   const clueNumber = getClueNumber(cellInfo);
   const isWall = cellInfo === '#';
   let fill = 'white';
@@ -43,6 +43,15 @@ export default function CrosswordCell({row, col, cellInfo, isActiveCell, isActiv
     >
       {clueNumber}
     </text>}
+    <text
+      x={col + .5}
+      y={row + .55}
+      textAnchor="middle"
+      dominantBaseline="middle"
+      style={{ fontSize: '.5', fill: "black" }}
+    >
+      {input}
+    </text>
   </g>;
 }
 

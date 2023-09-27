@@ -50,32 +50,42 @@ export default function CrosswordGrid({ data }: Props) {
     })
   });
 
-  const [activeCell, setActiveCell] = useState(getInitialActiveState(puzzleGrid));
-  const activeClue = activeCell.horizontal ? horizontalClues[activeCell.row][activeCell.col] : verticalClues[activeCell.row][activeCell.col];
+  const [selection, setSelection] = useState(getInitialActiveState(puzzleGrid));
+  const {row: activeRow, col: activeCol, horizontal} = selection;
+  const activeClue = horizontal ? horizontalClues[activeRow][activeCol] : verticalClues[activeRow][activeCol];
 
   const handleClick = ({ row, col }: {row: number, col: number}) => {
-    const {row: oldRow, col: oldCol, horizontal: oldHorizontal } = activeCell;
+    const {row: oldRow, col: oldCol, horizontal: oldHorizontal } = selection;
     const horizontal = row === oldRow && col === oldCol ? !oldHorizontal : true;
-    setActiveCell({row, col, horizontal})
+    setSelection({row, col, horizontal})
   }
+
+  const acrossClues = Object.fromEntries(data.clues.Across);
+  const downClues = Object.fromEntries(data.clues.Down);
   
-  return <svg viewBox={`0 0 ${width} ${height}`} height={600} width={600}>
-    {Array.from({length: width}, (_, i) => i).flatMap((row) => 
-      Array.from({length: height}, (_, i) => i).map((col) => {
-        return <CrosswordCell
-          key={`${row} ${col}`}
-          row={row}
-          col={col}
-          answer={answerGrid[row][col]}
-          input={inputGrid[row][col]}
-          cellInfo={puzzleGrid[row][col]}
-          isActiveCell={activeCell.row === row && activeCell.col === col}
-          isActiveClue={(activeCell.horizontal ? horizontalClues[row][col] : verticalClues[row][col]) === activeClue}
-          onClick={handleClick}
-        />
-      })
-    )}
-  </svg>
+  const clues = horizontal ? acrossClues : downClues;
+  const clueText = activeClue === null ? '' : clues[activeClue];
+
+  return <>
+    <svg viewBox={`0 0 ${width} ${height}`} height={600} width={600}>
+      {Array.from({length: width}, (_, i) => i).flatMap((row) => 
+        Array.from({length: height}, (_, i) => i).map((col) => {
+          return <CrosswordCell
+            key={`${row} ${col}`}
+            row={row}
+            col={col}
+            answer={answerGrid[row][col]}
+            input={inputGrid[row][col]}
+            cellInfo={puzzleGrid[row][col]}
+            isActiveCell={activeRow === row && activeCol === col}
+            isActiveClue={(selection.horizontal ? horizontalClues[row][col] : verticalClues[row][col]) === activeClue}
+            onClick={handleClick}
+          />
+        })
+      )}
+    </svg>
+    <div><strong>{activeClue}{horizontal ? 'A' : 'D'}</strong> {clueText}</div>
+  </>
 }
 
 function getInitialActiveState(grid: Ipuz['puzzle']): {row: number, col: number, horizontal: boolean} {
