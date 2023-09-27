@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import CrosswordCell from "./CrosswordCell";
 import { Ipuz } from "./Ipuz";
 
@@ -10,9 +10,9 @@ export default function CrosswordGrid({ data }: Props) {
   const { height, width } = data.dimensions;
   const puzzleGrid = data.puzzle;
   const answerGrid = data.solution;
-  const inputGrid: Array<Array<string>> = Array.from({
+  const [inputGrid, setInputGrid] = useState(Array.from({
     length: height
-  }, () => new Array(width).fill(''));
+  }, () => new Array(width).fill('')));
 
   const horizontalClues: Array<Array<number | null>> = Array.from({
     length: height
@@ -53,6 +53,21 @@ export default function CrosswordGrid({ data }: Props) {
   const [selection, setSelection] = useState(getInitialActiveState(puzzleGrid));
   const {row: activeRow, col: activeCol, horizontal} = selection;
   const activeClue = horizontal ? horizontalClues[activeRow][activeCol] : verticalClues[activeRow][activeCol];
+
+  const handleInput = useCallback((e: KeyboardEvent) => {
+    if (/^[a-z0-9]$/i.test(e.key)) {
+      setInputGrid(inputGrid => {
+        const newInputGrid = [...inputGrid];
+        newInputGrid[activeRow][activeCol] = e.key.toUpperCase();
+        return newInputGrid;
+      });
+    }
+  }, [activeRow, activeCol]);
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleInput);
+    return () => document.removeEventListener('keydown', handleInput);
+  }, [handleInput]);
 
   const handleClick = ({ row, col }: {row: number, col: number}) => {
     const {row: oldRow, col: oldCol, horizontal: oldHorizontal } = selection;
