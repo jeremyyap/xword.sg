@@ -64,6 +64,10 @@ export default function CrosswordGrid({ data }: Props) {
   );
 
   const handleKeydown = useCallback((e: KeyboardEvent) => {
+    if (e.code === 'Delete') {
+      handleInput('', selection);
+    }
+
     if (e.code === 'Backspace') {
       setSelection(selection => {
         const newSelection = getPreviousCell(puzzleGrid, selection)
