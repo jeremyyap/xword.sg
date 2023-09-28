@@ -3,7 +3,7 @@ import CrosswordCell from "./CrosswordCell";
 import { Ipuz } from "./Ipuz";
 
 type Props = {
-    data: Ipuz;
+  data: Ipuz;
 }
 
 export default function CrosswordGrid({ data }: Props) {
@@ -13,6 +13,7 @@ export default function CrosswordGrid({ data }: Props) {
   const [inputGrid, setInputGrid] = useState(Array.from({
     length: height
   }, () => new Array(width).fill('')));
+  const [completed, setCompleted] = useState(false);
 
   const horizontalClues: Array<Array<number | null>> = Array.from({
     length: height
@@ -54,14 +55,18 @@ export default function CrosswordGrid({ data }: Props) {
   const {row: activeRow, col: activeCol, horizontal} = selection;
   const activeClue = horizontal ? horizontalClues[activeRow][activeCol] : verticalClues[activeRow][activeCol];
 
-  const handleInput = useCallback((input: string, cell: {row: number, col: number, horizontal: boolean}) => 
+  const handleInput = useCallback((input: string, cell: {row: number, col: number, horizontal: boolean}) => {
+    if (completed) {
+      return;
+    }
+    
     setInputGrid(inputGrid => {
       const {row, col} = cell;
       const newInputGrid = [...inputGrid];
       newInputGrid[row][col] = input;
       return newInputGrid;
-    }), []
-  );
+    }) 
+  }, [completed]);
 
   const handleKeydown = useCallback((e: KeyboardEvent) => {
     if (e.ctrlKey || e.altKey || e.metaKey) {
@@ -109,6 +114,12 @@ export default function CrosswordGrid({ data }: Props) {
     return () => document.removeEventListener('keydown', handleKeydown);
   }, [handleKeydown]);
 
+  useEffect(() => {
+    if (checkGrid(inputGrid, answerGrid)) {
+      setCompleted(true);
+    }
+  }, [inputGrid, answerGrid]);
+
   const handleClick = ({ row, col }: {row: number, col: number}) => {
     const {row: oldRow, col: oldCol, horizontal: oldHorizontal } = selection;
     const horizontal = row === oldRow && col === oldCol ? !oldHorizontal : true;
@@ -141,6 +152,17 @@ export default function CrosswordGrid({ data }: Props) {
     </svg>
     <div><strong>{activeClue}{horizontal ? 'A' : 'D'}</strong> {clueText}</div>
   </>
+}
+
+function checkGrid(inputGrid: Ipuz['puzzle'], answerGrid: Ipuz['puzzle']): boolean {
+  for (let row = 0; row < answerGrid.length; row++) {
+    for (let col = 0; col < answerGrid[0].length; col++) {
+      if (answerGrid[row][col] != '#' && answerGrid[row][col] != inputGrid[row][col]) {
+        return false;
+      }
+    }
+  }
+  return true;
 }
 
 function getInitialActiveState(grid: Ipuz['puzzle']): {row: number, col: number, horizontal: boolean} {
