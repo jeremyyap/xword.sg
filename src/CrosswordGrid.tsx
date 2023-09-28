@@ -64,6 +64,28 @@ export default function CrosswordGrid({ data }: Props) {
   );
 
   const handleKeydown = useCallback((e: KeyboardEvent) => {
+    if (e.ctrlKey || e.altKey || e.metaKey) {
+      return;
+    }
+
+    if (e.code === 'ArrowDown' || e.code === 'ArrowRight') {
+      setSelection(selection => {
+        if ((e.code === 'ArrowRight') !== selection.horizontal) {
+          return { ...selection, horizontal: !selection.horizontal };
+        }
+        return getNextCell(puzzleGrid, selection);
+      });
+    }
+
+    if (e.code === 'ArrowUp' || e.code === 'ArrowLeft') {
+      setSelection(selection => {
+        if ((e.code === 'ArrowLeft') !== selection.horizontal) {
+          return { ...selection, horizontal: !selection.horizontal };
+        }
+        return getPreviousCell(puzzleGrid, selection);
+      });
+    }
+
     if (e.code === 'Delete') {
       handleInput('', selection);
     }
