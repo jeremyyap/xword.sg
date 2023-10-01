@@ -1,59 +1,20 @@
 import { useCallback, useEffect, useState } from "react";
 import CrosswordCell from "./CrosswordCell";
-import { Ipuz } from "./Ipuz";
+import useCrosswordData, { IpuzData } from "./useCrosswordData";
 
 type Props = {
-  data: Ipuz;
+  data: IpuzData;
 }
 
 export default function CrosswordGrid({ data }: Props) {
-  const { height, width } = data.dimensions;
-  const puzzleGrid = data.puzzle;
-  const answerGrid = data.solution;
+  const { dimensions: { height, width }, puzzle: puzzleGrid, solution: solutionGrid, acrossClues, downClues, acrossClueNumbers, downClueNumbers } = useCrosswordData(data);
   const [inputGrid, setInputGrid] = useState(Array.from({
     length: height
   }, () => new Array(width).fill('')));
   const [completed, setCompleted] = useState(false);
-
-  const horizontalClues: Array<Array<number | null>> = Array.from({
-    length: height
-  }, () => new Array(width).fill(null));
-
-  Array.from({length: height}, (_, i) => i).forEach((row) => {
-    let lastClueNumber: number | null = null
-    Array.from({length: width}, (_, i) => i).forEach((col) => {
-      const cellInfo = puzzleGrid[row][col];
-      if (cellInfo === '#') {
-        lastClueNumber = null;
-      }
-      const clueNumber = getClueNumber(puzzleGrid[row][col]);
-      lastClueNumber = lastClueNumber ?? clueNumber;
-
-      horizontalClues[row][col] = lastClueNumber;
-    })
-  });
-
-  const verticalClues: Array<Array<number | null>> = Array.from({
-    length: height
-  }, () => new Array(width).fill(null));
-
-  Array.from({length: width}, (_, i) => i).forEach((col) => {
-    let lastClueNumber: number | null = null
-    Array.from({length: height}, (_, i) => i).forEach((row) => {
-      const cellInfo = puzzleGrid[row][col];
-      if (cellInfo === '#') {
-        lastClueNumber = null;
-      }
-      const clueNumber = getClueNumber(puzzleGrid[row][col]);
-      lastClueNumber = lastClueNumber ?? clueNumber;
-
-      verticalClues[row][col] = lastClueNumber;
-    })
-  });
-
   const [selection, setSelection] = useState(getInitialActiveState(puzzleGrid));
   const {row: activeRow, col: activeCol, horizontal} = selection;
-  const activeClue = horizontal ? horizontalClues[activeRow][activeCol] : verticalClues[activeRow][activeCol];
+  const activeClue = horizontal ? acrossClueNumbers[activeRow][activeCol] : downClueNumbers[activeRow][activeCol];
 
   const handleInput = useCallback((input: string, cell: {row: number, col: number, horizontal: boolean}) => {
     if (completed) {
@@ -115,19 +76,16 @@ export default function CrosswordGrid({ data }: Props) {
   }, [handleKeydown]);
 
   useEffect(() => {
-    if (checkGrid(inputGrid, answerGrid)) {
+    if (checkGrid(inputGrid, solutionGrid)) {
       setCompleted(true);
     }
-  }, [inputGrid, answerGrid]);
+  }, [inputGrid, solutionGrid]);
 
   const handleClick = ({ row, col }: {row: number, col: number}) => {
     const {row: oldRow, col: oldCol, horizontal: oldHorizontal } = selection;
     const horizontal = row === oldRow && col === oldCol ? !oldHorizontal : true;
     setSelection({row, col, horizontal})
   }
-
-  const acrossClues = Object.fromEntries(data.clues.Across);
-  const downClues = Object.fromEntries(data.clues.Down);
   
   const clues = horizontal ? acrossClues : downClues;
   const clueText = activeClue === null ? '' : clues[activeClue];
@@ -140,11 +98,11 @@ export default function CrosswordGrid({ data }: Props) {
             key={`${row} ${col}`}
             row={row}
             col={col}
-            answer={answerGrid[row][col]}
+            answer={solutionGrid[row][col]}
             input={inputGrid[row][col]}
             cellInfo={puzzleGrid[row][col]}
             isActiveCell={activeRow === row && activeCol === col}
-            isActiveClue={(selection.horizontal ? horizontalClues[row][col] : verticalClues[row][col]) === activeClue}
+            isActiveClue={(selection.horizontal ? acrossClueNumbers[row][col] : downClueNumbers[row][col]) === activeClue}
             onClick={handleClick}
           />
         })
@@ -154,7 +112,7 @@ export default function CrosswordGrid({ data }: Props) {
   </>
 }
 
-function checkGrid(inputGrid: Ipuz['puzzle'], answerGrid: Ipuz['puzzle']): boolean {
+function checkGrid(inputGrid: IpuzData['puzzle'], answerGrid: IpuzData['puzzle']): boolean {
   for (let row = 0; row < answerGrid.length; row++) {
     for (let col = 0; col < answerGrid[0].length; col++) {
       if (answerGrid[row][col] != '#' && answerGrid[row][col] != inputGrid[row][col]) {
@@ -165,7 +123,7 @@ function checkGrid(inputGrid: Ipuz['puzzle'], answerGrid: Ipuz['puzzle']): boole
   return true;
 }
 
-function getInitialActiveState(grid: Ipuz['puzzle']): {row: number, col: number, horizontal: boolean} {
+function getInitialActiveState(grid: IpuzData['puzzle']): {row: number, col: number, horizontal: boolean} {
   for (let row = 0; row < grid.length; row++) {
     for (let col = 0; col < grid[0].length; col++) {
       const cellInfo = grid[row][col];
@@ -177,7 +135,7 @@ function getInitialActiveState(grid: Ipuz['puzzle']): {row: number, col: number,
   return {row: -1, col: -1, horizontal: true};
 }
 
-function getNextCell(grid: Ipuz['puzzle'], current: {row: number, col: number, horizontal: boolean}): {row: number, col: number, horizontal: boolean} {
+function getNextCell(grid: IpuzData['puzzle'], current: {row: number, col: number, horizontal: boolean}): {row: number, col: number, horizontal: boolean} {
   const width = grid[0].length;
   const height = grid.length;
   let {row, col} = current;
@@ -201,7 +159,7 @@ function getNextCell(grid: Ipuz['puzzle'], current: {row: number, col: number, h
   return {row, col, horizontal};
 }
 
-function getPreviousCell(grid: Ipuz['puzzle'], current: {row: number, col: number, horizontal: boolean}): {row: number, col: number, horizontal: boolean} {
+function getPreviousCell(grid: IpuzData['puzzle'], current: {row: number, col: number, horizontal: boolean}): {row: number, col: number, horizontal: boolean} {
   const width = grid[0].length;
   const height = grid.length;
   let {row, col} = current;
@@ -223,16 +181,4 @@ function getPreviousCell(grid: Ipuz['puzzle'], current: {row: number, col: numbe
     } while (grid[row][col] == '#');
   }
   return {row, col, horizontal};
-}
-
-function getClueNumber(cellInfo: Ipuz['puzzle'][number][number]): number | null {
-  if (cellInfo instanceof Object) {
-    return cellInfo.cell === 0 ? null : cellInfo.cell;
-  }
-
-  if (typeof cellInfo === "string") {
-    return null;
-  }
-
-  return cellInfo === 0 ? null : cellInfo;
 }
