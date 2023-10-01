@@ -1,41 +1,47 @@
-import { useMemo } from 'react';
-import { CrosswordData } from './CrosswordData';
+import { useMemo } from "react";
+import { CrosswordData } from "./CrosswordData";
 
 export default function useCrosswordData(data: IpuzData): CrosswordData {
   return useMemo(() => {
     const { height, width } = data.dimensions;
-    const acrossClueNumbers: Array<Array<number | null>> = Array.from({
-      length: height
-    }, () => new Array(width).fill(null));
-  
-    Array.from({length: height}, (_, i) => i).forEach((row) => {
-      let lastClueNumber: number | null = null
-      Array.from({length: width}, (_, i) => i).forEach((col) => {
-        if (data.puzzle[row][col] === '#') {
+    const acrossClueNumbers: Array<Array<number | null>> = Array.from(
+      {
+        length: height,
+      },
+      () => new Array(width).fill(null),
+    );
+
+    Array.from({ length: height }, (_, i) => i).forEach((row) => {
+      let lastClueNumber: number | null = null;
+      Array.from({ length: width }, (_, i) => i).forEach((col) => {
+        if (data.puzzle[row][col] === "#") {
           lastClueNumber = null;
         }
         const clueNumber = getClueNumber(data.puzzle[row][col]);
         lastClueNumber = lastClueNumber ?? clueNumber;
-  
+
         acrossClueNumbers[row][col] = lastClueNumber;
-      })
+      });
     });
-  
-    const downClueNumbers: Array<Array<number | null>> = Array.from({
-      length: height
-    }, () => new Array(width).fill(null));
-  
-    Array.from({length: width}, (_, i) => i).forEach((col) => {
-      let lastClueNumber: number | null = null
-      Array.from({length: height}, (_, i) => i).forEach((row) => {
-        if (data.puzzle[row][col] === '#') {
+
+    const downClueNumbers: Array<Array<number | null>> = Array.from(
+      {
+        length: height,
+      },
+      () => new Array(width).fill(null),
+    );
+
+    Array.from({ length: width }, (_, i) => i).forEach((col) => {
+      let lastClueNumber: number | null = null;
+      Array.from({ length: height }, (_, i) => i).forEach((row) => {
+        if (data.puzzle[row][col] === "#") {
           lastClueNumber = null;
         }
         const clueNumber = getClueNumber(data.puzzle[row][col]);
         lastClueNumber = lastClueNumber ?? clueNumber;
-  
+
         downClueNumbers[row][col] = lastClueNumber;
-      })
+      });
     });
 
     const { dimensions, puzzle, solution } = data;
@@ -50,11 +56,13 @@ export default function useCrosswordData(data: IpuzData): CrosswordData {
       acrossClues,
       downClueNumbers,
       downClues,
-    }
+    };
   }, [data]);
 }
 
-function getClueNumber(cellInfo: IpuzData['puzzle'][number][number]): number | null {
+function getClueNumber(
+  cellInfo: IpuzData["puzzle"][number][number],
+): number | null {
   if (cellInfo instanceof Object) {
     return cellInfo.cell === 0 ? null : cellInfo.cell;
   }
