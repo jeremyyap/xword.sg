@@ -12,6 +12,7 @@ import useCrosswordData from "./useCrosswordData";
 import useKeydownListener from "./useKeydownListener";
 import Keyboard from "react-simple-keyboard";
 import "react-simple-keyboard/build/css/index.css";
+import useIsMobileBrowser from "./useIsMobileBrowser";
 
 export default function App() {
   const crosswordData = useCrosswordData(ipuzData);
@@ -79,7 +80,7 @@ export default function App() {
         selection={selection}
         setSelection={setSelection}
       />
-      <Keyboard
+      {useIsMobileBrowser() && <Keyboard
         layout={{
           default: [
             "Q W E R T Y U I O P",
@@ -89,7 +90,7 @@ export default function App() {
         }}
         theme="hg-theme-default dark"
         onKeyPress={handleKeyboardPress}
-      />
+      />}
     </>
   );
 }
