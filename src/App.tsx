@@ -3,9 +3,11 @@ import ipuzData from "./sample";
 import CrosswordGrid from "./CrosswordGrid";
 import { useState, useCallback, useEffect } from "react";
 import { CellSelection } from "./CrosswordData";
-import { getInitialActiveState, checkGrid } from "./gridUtils";
+import { getInitialActiveState, checkGrid, getNextCell, getPreviousCell } from "./gridUtils";
 import useCrosswordData from "./useCrosswordData";
 import useKeydownListener from "./useKeydownListener";
+import Keyboard from "react-simple-keyboard";
+import "react-simple-keyboard/build/css/index.css";
 
 export default function App() {
   const crosswordData = useCrosswordData(ipuzData);
@@ -41,6 +43,21 @@ export default function App() {
     [completed],
   );
 
+  const handleKeyboardPress = useCallback(
+    (button: string) => {
+      if (button === "{bksp}") {
+        setSelection((selection) => {
+          const newSelection = getPreviousCell(puzzleGrid, selection);
+          handleInput("", newSelection);
+          return newSelection;
+        });
+      } else {
+        handleInput(button, selection)
+        setSelection((selection) => getNextCell(puzzleGrid, selection));
+      }
+    }, [handleInput, selection, puzzleGrid]
+  )
+
   useKeydownListener(handleInput, puzzleGrid, selection, setSelection);
 
   useEffect(() => {
@@ -50,11 +67,24 @@ export default function App() {
   }, [inputGrid, solutionGrid]);
 
   return (
-    <CrosswordGrid
-      data={crosswordData}
-      inputGrid={inputGrid}
-      selection={selection}
-      setSelection={setSelection}
-    />
+    <>
+      <CrosswordGrid
+        data={crosswordData}
+        inputGrid={inputGrid}
+        selection={selection}
+        setSelection={setSelection}
+      />
+      <Keyboard
+        layout={{
+          default: [
+            "Q W E R T Y U I O P",
+            "A S D F G H J K L",
+            "Z X C V B N M {bksp}",
+          ],
+        }}
+        theme="hg-theme-default dark"
+        onKeyPress={handleKeyboardPress}
+      />
+    </>
   );
 }

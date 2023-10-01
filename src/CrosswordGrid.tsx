@@ -39,7 +39,12 @@ export default function CrosswordGrid({
 
   return (
     <>
-      <svg viewBox={`0 0 ${width} ${height}`} height={600} width={600} style={{userSelect: "none"}}>
+      <svg
+        viewBox={`0 0 ${width} ${height}`}
+        height={600}
+        width={600}
+        style={{ userSelect: "none" }}
+      >
         {Array.from({ length: width }, (_, i) => i).flatMap((row) =>
           Array.from({ length: height }, (_, i) => i).map((col) => {
             return (
