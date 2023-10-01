@@ -97,9 +97,9 @@ export function getClueStart(
         cellInfo === clueNumber ||
         (cellInfo instanceof Object && cellInfo.cell === clueNumber)
       ) {
-        return {row, col, horizontal}
+        return { row, col, horizontal };
       }
     }
   }
-  return {row: -1, col: -1, horizontal};
+  return { row: -1, col: -1, horizontal };
 }

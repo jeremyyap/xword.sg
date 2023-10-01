@@ -80,17 +80,19 @@ export default function App() {
         selection={selection}
         setSelection={setSelection}
       />
-      {useIsMobileBrowser() && <Keyboard
-        layout={{
-          default: [
-            "Q W E R T Y U I O P",
-            "A S D F G H J K L",
-            "Z X C V B N M {bksp}",
-          ],
-        }}
-        theme="hg-theme-default dark"
-        onKeyPress={handleKeyboardPress}
-      />}
+      {useIsMobileBrowser() && (
+        <Keyboard
+          layout={{
+            default: [
+              "Q W E R T Y U I O P",
+              "A S D F G H J K L",
+              "Z X C V B N M {bksp}",
+            ],
+          }}
+          theme="hg-theme-default dark"
+          onKeyPress={handleKeyboardPress}
+        />
+      )}
     </>
   );
 }

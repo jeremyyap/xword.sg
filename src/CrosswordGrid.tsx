@@ -41,31 +41,45 @@ export default function CrosswordGrid({
   const clues = horizontal ? acrossClues : downClues;
   const clueText = activeClue === null ? "" : clues[activeClue];
 
-  const goToPreviousClue = useCallback(
-    () => {
-      const clueNumbers = horizontal ? acrossClueNumbers : downClueNumbers;
-      const otherClueNumbers = horizontal ? downClueNumbers : acrossClueNumbers;
-      const previousClueNumber = clueNumbers.findLast(clue => clue < activeClue!);
-      if (previousClueNumber != null) {
-        setSelection(getClueStart(puzzleGrid, previousClueNumber, horizontal));
-      } else {
-        setSelection(getClueStart(puzzleGrid, otherClueNumbers.slice(-1)[0], !horizontal));
-      }
+  const goToPreviousClue = useCallback(() => {
+    const clueNumbers = horizontal ? acrossClueNumbers : downClueNumbers;
+    const otherClueNumbers = horizontal ? downClueNumbers : acrossClueNumbers;
+    const previousClueNumber = clueNumbers.findLast(
+      (clue) => clue < activeClue!,
+    );
+    if (previousClueNumber != null) {
+      setSelection(getClueStart(puzzleGrid, previousClueNumber, horizontal));
+    } else {
+      setSelection(
+        getClueStart(puzzleGrid, otherClueNumbers.slice(-1)[0], !horizontal),
+      );
     }
-  , [horizontal, acrossClueNumbers, downClueNumbers, activeClue, setSelection, puzzleGrid]);
+  }, [
+    horizontal,
+    acrossClueNumbers,
+    downClueNumbers,
+    activeClue,
+    setSelection,
+    puzzleGrid,
+  ]);
 
-  const goToNextClue = useCallback(
-    () => {
-      const clueNumbers = horizontal ? acrossClueNumbers : downClueNumbers;
-      const otherClueNumbers = horizontal ? downClueNumbers : acrossClueNumbers;
-      const nextClueNumber = clueNumbers.find(clue => clue > activeClue!);
-      if (nextClueNumber != null) {
-        setSelection(getClueStart(puzzleGrid, nextClueNumber, horizontal));
-      } else {
-        setSelection(getClueStart(puzzleGrid, otherClueNumbers[0], !horizontal));
-      }
+  const goToNextClue = useCallback(() => {
+    const clueNumbers = horizontal ? acrossClueNumbers : downClueNumbers;
+    const otherClueNumbers = horizontal ? downClueNumbers : acrossClueNumbers;
+    const nextClueNumber = clueNumbers.find((clue) => clue > activeClue!);
+    if (nextClueNumber != null) {
+      setSelection(getClueStart(puzzleGrid, nextClueNumber, horizontal));
+    } else {
+      setSelection(getClueStart(puzzleGrid, otherClueNumbers[0], !horizontal));
     }
-  , [horizontal, acrossClueNumbers, downClueNumbers, activeClue, setSelection, puzzleGrid]);
+  }, [
+    horizontal,
+    acrossClueNumbers,
+    downClueNumbers,
+    activeClue,
+    setSelection,
+    puzzleGrid,
+  ]);
 
   return (
     <>
@@ -93,15 +107,19 @@ export default function CrosswordGrid({
         )}
       </svg>
       <div className="clue-bar">
-        <div className="clue-arrow" onClick={goToPreviousClue}>&#10094;</div>
+        <div className="clue-arrow" onClick={goToPreviousClue}>
+          &#10094;
+        </div>
         <span className="clue-text">
-        <strong>
-          {activeClue}
-          {horizontal ? "A" : "D"}
-        </strong>{" "}
-        {clueText}
+          <strong>
+            {activeClue}
+            {horizontal ? "A" : "D"}
+          </strong>{" "}
+          {clueText}
         </span>
-        <div className="clue-arrow" onClick={goToNextClue}>&#10095;</div>
+        <div className="clue-arrow" onClick={goToNextClue}>
+          &#10095;
+        </div>
       </div>
     </>
   );

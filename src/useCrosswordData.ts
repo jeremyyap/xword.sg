@@ -4,7 +4,7 @@ import { CrosswordData } from "./CrosswordData";
 export default function useCrosswordData(data: IpuzData): CrosswordData {
   return useMemo(() => {
     const { height, width } = data.dimensions;
-    const acrossClueNumbers = data.clues.Across.map(clue => clue[0]);
+    const acrossClueNumbers = data.clues.Across.map((clue) => clue[0]);
     const mappedAcrossClues: Array<Array<number | null>> = Array.from(
       {
         length: height,
@@ -25,7 +25,7 @@ export default function useCrosswordData(data: IpuzData): CrosswordData {
       });
     });
 
-    const downClueNumbers = data.clues.Down.map(clue => clue[0]);
+    const downClueNumbers = data.clues.Down.map((clue) => clue[0]);
     const mappedDownClues: Array<Array<number | null>> = Array.from(
       {
         length: height,
