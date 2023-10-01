@@ -23,12 +23,28 @@ export default function CrosswordCell({
   const clueNumber = getClueNumber(cellInfo);
   const isWall = cellInfo === "#";
   let fill = "white";
-  if (isWall) {
-    fill = "black";
-  } else if (isActiveCell) {
-    fill = "yellow";
-  } else if (isActiveClue) {
-    fill = "cyan";
+
+  const isDarkMode =
+    window.matchMedia &&
+    window.matchMedia("(prefers-color-scheme: dark)").matches;
+  if (isDarkMode) {
+    fill = "#555";
+
+    if (isWall) {
+      fill = "black";
+    } else if (isActiveCell) {
+      fill = "#6495ED";
+    } else if (isActiveClue) {
+      fill = "#0F52BA";
+    }
+  } else {
+    if (isWall) {
+      fill = "black";
+    } else if (isActiveCell) {
+      fill = "yellow";
+    } else if (isActiveClue) {
+      fill = "cyan";
+    }
   }
 
   const handleClick = () => onClick({ row, col });
@@ -49,7 +65,7 @@ export default function CrosswordCell({
           x={col + 0.05}
           y={row + 0.05}
           dominantBaseline="hanging"
-          style={{ fontSize: ".3", fill: "black" }}
+          style={{ fontSize: ".25", fill: isDarkMode ? "white" : "black" }}
         >
           {clueNumber}
         </text>
@@ -59,7 +75,7 @@ export default function CrosswordCell({
         y={row + 0.55}
         textAnchor="middle"
         dominantBaseline="middle"
-        style={{ fontSize: ".5", fill: "black" }}
+        style={{ fontSize: ".5", fill: isDarkMode ? "white" : "black" }}
       >
         {input}
       </text>

@@ -1,9 +1,13 @@
-import "./App.css";
 import ipuzData from "./sample";
 import CrosswordGrid from "./CrosswordGrid";
 import { useState, useCallback, useEffect } from "react";
 import { CellSelection } from "./CrosswordData";
-import { getInitialActiveState, checkGrid, getNextCell, getPreviousCell } from "./gridUtils";
+import {
+  getInitialActiveState,
+  checkGrid,
+  getNextCell,
+  getPreviousCell,
+} from "./gridUtils";
 import useCrosswordData from "./useCrosswordData";
 import useKeydownListener from "./useKeydownListener";
 import Keyboard from "react-simple-keyboard";
@@ -52,11 +56,12 @@ export default function App() {
           return newSelection;
         });
       } else {
-        handleInput(button, selection)
+        handleInput(button, selection);
         setSelection((selection) => getNextCell(puzzleGrid, selection));
       }
-    }, [handleInput, selection, puzzleGrid]
-  )
+    },
+    [handleInput, selection, puzzleGrid],
+  );
 
   useKeydownListener(handleInput, puzzleGrid, selection, setSelection);
 
