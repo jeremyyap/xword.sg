@@ -106,8 +106,8 @@ export type IpuzData = {
     >
   >;
   clues: {
-    Across: Array<Array<string | number>>;
-    Down: Array<Array<string | number>>;
+    Across: Array<[number, string]>;
+    Down: Array<[number, string]>;
   };
   solution: Array<Array<string>>;
 };

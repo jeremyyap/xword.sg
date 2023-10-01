@@ -133,7 +133,7 @@ const ipuzData = {
       [69, "Rejoice"],
       [70, "Communicator for those who can't hear: abbr."],
       [71, "Win all the games"],
-    ],
+    ] as Array<[number, string]>,
 
     Down: [
       [1, "The United States has a great one"],
@@ -183,7 +183,7 @@ const ipuzData = {
       [61, "Feed for the pigs"],
       [63, "Approx."],
       [65, 'Stock market benchmark, with "The"'],
-    ],
+    ] as Array<[number, string]>,
   },
 
   solution: [
