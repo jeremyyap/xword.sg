@@ -1,11 +1,11 @@
-import { Ipuz } from "./Ipuz";
+import { CellData } from "./CrosswordData";
 
 type Props = {
   row: number;
   col: number;
   answer: string;
   input: string;
-  cellInfo: Ipuz['puzzle'][number][number];
+  cellInfo: CellData;
   isActiveCell: boolean;
   isActiveClue: boolean;
   onClick: (activeCell: {row: number, col: number}) => void;
@@ -55,7 +55,7 @@ export default function CrosswordCell({row, col, cellInfo, isActiveCell, isActiv
   </g>;
 }
 
-function getClueNumber(cellInfo: Ipuz['puzzle'][number][number]): number | null {
+function getClueNumber(cellInfo: CellData): number | null {
   if (cellInfo instanceof Object) {
     return cellInfo.cell === 0 ? null : cellInfo.cell;
   }

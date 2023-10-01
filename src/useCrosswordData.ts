@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
+import { CrosswordData } from './CrosswordData';
 
-export default function useCrosswordData(data: IpuzData)  {
+export default function useCrosswordData(data: IpuzData): CrosswordData {
   return useMemo(() => {
     const { height, width } = data.dimensions;
     const acrossClueNumbers: Array<Array<number | null>> = Array.from({
@@ -64,7 +65,6 @@ function getClueNumber(cellInfo: IpuzData['puzzle'][number][number]): number | n
 
   return cellInfo === 0 ? null : cellInfo;
 }
-
 
 export type IpuzData = {
   origin: string;
