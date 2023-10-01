@@ -5,10 +5,12 @@ export type CrosswordData = {
   };
   puzzle: Array<Array<CellData>>;
   solution: Array<Array<string>>;
-  acrossClueNumbers: Array<Array<number | null>>;
+  acrossClueNumbers: Array<number>;
   acrossClues: { [key: number]: string };
-  downClueNumbers: Array<Array<number | null>>;
+  downClueNumbers: Array<number>;
   downClues: { [key: number]: string };
+  mappedAcrossClues: Array<Array<number | null>>;
+  mappedDownClues: Array<Array<number | null>>;
 };
 
 export type CellData =

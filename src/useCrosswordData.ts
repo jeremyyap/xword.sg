@@ -4,7 +4,8 @@ import { CrosswordData } from "./CrosswordData";
 export default function useCrosswordData(data: IpuzData): CrosswordData {
   return useMemo(() => {
     const { height, width } = data.dimensions;
-    const acrossClueNumbers: Array<Array<number | null>> = Array.from(
+    const acrossClueNumbers = data.clues.Across.map(clue => clue[0]);
+    const mappedAcrossClues: Array<Array<number | null>> = Array.from(
       {
         length: height,
       },
@@ -20,11 +21,12 @@ export default function useCrosswordData(data: IpuzData): CrosswordData {
         const clueNumber = getClueNumber(data.puzzle[row][col]);
         lastClueNumber = lastClueNumber ?? clueNumber;
 
-        acrossClueNumbers[row][col] = lastClueNumber;
+        mappedAcrossClues[row][col] = lastClueNumber;
       });
     });
 
-    const downClueNumbers: Array<Array<number | null>> = Array.from(
+    const downClueNumbers = data.clues.Down.map(clue => clue[0]);
+    const mappedDownClues: Array<Array<number | null>> = Array.from(
       {
         length: height,
       },
@@ -40,7 +42,7 @@ export default function useCrosswordData(data: IpuzData): CrosswordData {
         const clueNumber = getClueNumber(data.puzzle[row][col]);
         lastClueNumber = lastClueNumber ?? clueNumber;
 
-        downClueNumbers[row][col] = lastClueNumber;
+        mappedDownClues[row][col] = lastClueNumber;
       });
     });
 
@@ -56,6 +58,8 @@ export default function useCrosswordData(data: IpuzData): CrosswordData {
       acrossClues,
       downClueNumbers,
       downClues,
+      mappedAcrossClues,
+      mappedDownClues,
     };
   }, [data]);
 }

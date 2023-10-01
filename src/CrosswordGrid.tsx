@@ -1,5 +1,7 @@
+import { useCallback } from "react";
 import CrosswordCell from "./CrosswordCell";
 import { CellSelection, CrosswordData } from "./CrosswordData";
+import { getClueStart } from "./gridUtils";
 
 type Props = {
   data: CrosswordData;
@@ -19,14 +21,16 @@ export default function CrosswordGrid({
     puzzle: puzzleGrid,
     solution: solutionGrid,
     acrossClues,
-    downClues,
     acrossClueNumbers,
+    downClues,
     downClueNumbers,
+    mappedAcrossClues,
+    mappedDownClues,
   } = data;
   const { row: activeRow, col: activeCol, horizontal } = selection;
   const activeClue = horizontal
-    ? acrossClueNumbers[activeRow][activeCol]
-    : downClueNumbers[activeRow][activeCol];
+    ? mappedAcrossClues[activeRow][activeCol]
+    : mappedDownClues[activeRow][activeCol];
 
   const handleClick = ({ row, col }: { row: number; col: number }) => {
     const { row: oldRow, col: oldCol, horizontal: oldHorizontal } = selection;
@@ -36,6 +40,32 @@ export default function CrosswordGrid({
 
   const clues = horizontal ? acrossClues : downClues;
   const clueText = activeClue === null ? "" : clues[activeClue];
+
+  const goToPreviousClue = useCallback(
+    () => {
+      const clueNumbers = horizontal ? acrossClueNumbers : downClueNumbers;
+      const otherClueNumbers = horizontal ? downClueNumbers : acrossClueNumbers;
+      const previousClueNumber = clueNumbers.findLast(clue => clue < activeClue!);
+      if (previousClueNumber != null) {
+        setSelection(getClueStart(puzzleGrid, previousClueNumber, horizontal));
+      } else {
+        setSelection(getClueStart(puzzleGrid, otherClueNumbers.slice(-1)[0], !horizontal));
+      }
+    }
+  , [horizontal, acrossClueNumbers, downClueNumbers, activeClue, setSelection, puzzleGrid]);
+
+  const goToNextClue = useCallback(
+    () => {
+      const clueNumbers = horizontal ? acrossClueNumbers : downClueNumbers;
+      const otherClueNumbers = horizontal ? downClueNumbers : acrossClueNumbers;
+      const nextClueNumber = clueNumbers.find(clue => clue > activeClue!);
+      if (nextClueNumber != null) {
+        setSelection(getClueStart(puzzleGrid, nextClueNumber, horizontal));
+      } else {
+        setSelection(getClueStart(puzzleGrid, otherClueNumbers[0], !horizontal));
+      }
+    }
+  , [horizontal, acrossClueNumbers, downClueNumbers, activeClue, setSelection, puzzleGrid]);
 
   return (
     <>
@@ -53,8 +83,8 @@ export default function CrosswordGrid({
                 isActiveCell={activeRow === row && activeCol === col}
                 isActiveClue={
                   (selection.horizontal
-                    ? acrossClueNumbers[row][col]
-                    : downClueNumbers[row][col]) === activeClue
+                    ? mappedAcrossClues[row][col]
+                    : mappedDownClues[row][col]) === activeClue
                 }
                 onClick={handleClick}
               />
@@ -62,12 +92,16 @@ export default function CrosswordGrid({
           }),
         )}
       </svg>
-      <div>
+      <div className="clue-bar">
+        <div className="clue-arrow" onClick={goToPreviousClue}>&#10094;</div>
+        <span className="clue-text">
         <strong>
           {activeClue}
           {horizontal ? "A" : "D"}
         </strong>{" "}
         {clueText}
+        </span>
+        <div className="clue-arrow" onClick={goToNextClue}>&#10095;</div>
       </div>
     </>
   );

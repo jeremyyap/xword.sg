@@ -84,3 +84,22 @@ export function getPreviousCell(
   }
   return { row, col, horizontal };
 }
+
+export function getClueStart(
+  puzzleGrid: Array<Array<CellData>>,
+  clueNumber: number,
+  horizontal: boolean,
+): CellSelection {
+  for (let row = 0; row < puzzleGrid.length; row++) {
+    for (let col = 0; col < puzzleGrid[0].length; col++) {
+      const cellInfo = puzzleGrid[row][col];
+      if (
+        cellInfo === clueNumber ||
+        (cellInfo instanceof Object && cellInfo.cell === clueNumber)
+      ) {
+        return {row, col, horizontal}
+      }
+    }
+  }
+  return {row: -1, col: -1, horizontal};
+}
