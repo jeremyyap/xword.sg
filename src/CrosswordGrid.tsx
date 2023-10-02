@@ -34,7 +34,8 @@ export default function CrosswordGrid({
 
   const handleClick = ({ row, col }: { row: number; col: number }) => {
     const { row: oldRow, col: oldCol, horizontal: oldHorizontal } = selection;
-    const horizontal = row === oldRow && col === oldCol ? !oldHorizontal : true;
+    const horizontal =
+      row === oldRow && col === oldCol ? !oldHorizontal : oldHorizontal;
     setSelection({ row, col, horizontal });
   };
 
