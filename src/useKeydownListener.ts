@@ -41,11 +41,8 @@ export default function useKeydownListener(
       }
 
       if (e.code === "Backspace") {
-        setSelection((selection) => {
-          const newSelection = getPreviousCell(puzzleGrid, selection);
-          handleInput("", newSelection);
-          return newSelection;
-        });
+        handleInput("", selection);
+        setSelection(getPreviousCell(puzzleGrid, selection));
       }
 
       if (/^[a-z0-9]$/i.test(e.key)) {
