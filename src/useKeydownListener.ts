@@ -14,6 +14,10 @@ export default function useKeydownListener(
         return;
       }
 
+      if (e.code === "Tab") {
+        e.preventDefault();
+      }
+
       if (e.code === "ArrowDown" || e.code === "ArrowRight") {
         setSelection((selection) => {
           if ((e.code === "ArrowRight") !== selection.horizontal) {
