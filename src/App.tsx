@@ -12,6 +12,7 @@ import useKeydownListener from "./useKeydownListener";
 import Keyboard from "react-simple-keyboard";
 import "react-simple-keyboard/build/css/index.css";
 import useIsMobileBrowser from "./useIsMobileBrowser";
+import Modal from "./Modal";
 
 type Props = {
   ipuzData: IpuzData;
@@ -34,6 +35,7 @@ export default function App({ ipuzData }: Props) {
   );
   const [completed, setCompleted] = useState(false);
   const [selection, setSelection] = useState(getInitialActiveState(puzzleGrid));
+  const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
 
   const handleInput = useCallback(
     (input: string, cell: CellSelection) => {
@@ -71,9 +73,12 @@ export default function App({ ipuzData }: Props) {
 
   useEffect(() => {
     if (checkGrid(inputGrid, solutionGrid)) {
+      if (!completed) {
+        setIsCompleteModalOpen(true);
+      }
       setCompleted(true);
     }
-  }, [inputGrid, solutionGrid]);
+  }, [completed, inputGrid, solutionGrid]);
 
   return (
     <>
@@ -96,8 +101,13 @@ export default function App({ ipuzData }: Props) {
               "Z X C V B N M {bksp}",
             ],
           }}
-          theme="hg-theme-default dark"
           onKeyPress={handleKeyboardPress}
+        />
+      )}
+      {isCompleteModalOpen && (
+        <Modal
+          text="Congratulations! Come back tomorrow for a new puzzle, hopefully we haven't run out..."
+          onHide={() => setIsCompleteModalOpen(false)}
         />
       )}
     </>

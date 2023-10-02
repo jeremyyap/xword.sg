@@ -118,3 +118,25 @@ button:focus-visible {
   justify-content: space-between;
   line-height: 40px;
 }
+
+.modal {
+  position: fixed;
+  left: 50%;
+  top: 100px;
+  width: 50vw;
+  transform: translate(-50%, 0);
+  background-color: #666;
+  color: white;
+  margin: auto;
+  padding: 56px 40px;
+}
+
+.close-button {
+  font-size: 40px;
+  line-height: 40px;
+  height: 40px;
+  width: 40px;
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
