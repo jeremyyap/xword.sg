@@ -65,7 +65,7 @@ export default function CrosswordCell({
           x={col + 0.05}
           y={row + 0.05}
           dominantBaseline="hanging"
-          style={{ fontSize: ".25", fill: isDarkMode ? "white" : "black" }}
+          style={{ fontSize: ".25px", fill: isDarkMode ? "white" : "black" }}
         >
           {clueNumber}
         </text>
@@ -75,7 +75,7 @@ export default function CrosswordCell({
         y={row + 0.55}
         textAnchor="middle"
         dominantBaseline="middle"
-        style={{ fontSize: ".5", fill: isDarkMode ? "white" : "black" }}
+        style={{ fontSize: ".5px", fill: isDarkMode ? "white" : "black" }}
       >
         {input}
       </text>
