@@ -34,7 +34,6 @@ body {
   display: flex;
   place-items: center;
   min-width: 320px;
-  min-height: 100vh;
 }
 
 h1 {
@@ -74,6 +73,8 @@ button:focus-visible {
   }
   .hg-theme-default.react-simple-keyboard {
     background-color: rgb(64, 64, 64);
+    position: absolute;
+    bottom: 0;
   }
   .hg-theme-default .hg-button {
     background-color: rgb(36, 36, 36);
