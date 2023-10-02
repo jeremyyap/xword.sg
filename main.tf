@@ -79,7 +79,9 @@ resource "aws_s3_bucket_website_configuration" "www_xword_sg" {
 }
 
 resource "aws_s3_object" "dist" {
-  for_each = fileset("dist/", "**")
+  for_each = toset([
+    for file in fileset("dist/", "**") : file if !startswith(file, "crosswords")
+  ])
   key    = each.value 
   bucket = aws_s3_bucket.www_xword_sg.id
   source = "dist/${each.value}"

@@ -111,8 +111,10 @@ button:focus-visible {
 }
 
 .header {
-  font-size: 24px;
+  padding: 8px;
+  font-size: 20px;
   height: 40px;
   display: flex;
   justify-content: space-between;
+  line-height: 40px;
 }

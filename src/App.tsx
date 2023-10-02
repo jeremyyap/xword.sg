@@ -1,4 +1,3 @@
-import ipuzData from "./sample";
 import CrosswordGrid from "./CrosswordGrid";
 import { useState, useCallback, useEffect } from "react";
 import { CellSelection } from "./CrosswordData";
@@ -8,13 +7,17 @@ import {
   getNextCell,
   getPreviousCell,
 } from "./gridUtils";
-import useCrosswordData from "./useCrosswordData";
+import useCrosswordData, { IpuzData } from "./useCrosswordData";
 import useKeydownListener from "./useKeydownListener";
 import Keyboard from "react-simple-keyboard";
 import "react-simple-keyboard/build/css/index.css";
 import useIsMobileBrowser from "./useIsMobileBrowser";
 
-export default function App() {
+type Props = {
+  ipuzData: IpuzData;
+};
+
+export default function App({ ipuzData }: Props) {
   const crosswordData = useCrosswordData(ipuzData);
   const {
     dimensions: { height, width },
@@ -72,16 +75,11 @@ export default function App() {
     }
   }, [inputGrid, solutionGrid]);
 
-  const puzzleDate = new Date();
-
   return (
     <>
       <div className="header">
         <span>xword.sg</span>
-        <span>
-          {puzzleDate.getDate()}/{puzzleDate.getMonth() + 1}/
-          {puzzleDate.getFullYear()}
-        </span>
+        <span>{ipuzData.title}</span>
       </div>
       <CrosswordGrid
         data={crosswordData}
