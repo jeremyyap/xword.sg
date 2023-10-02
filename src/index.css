@@ -75,6 +75,10 @@ button:focus-visible {
     background-color: rgb(64, 64, 64);
     position: absolute;
     bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 600px;
+    margin: 0 auto;
   }
   .hg-theme-default .hg-button {
     background-color: rgb(36, 36, 36);
@@ -85,8 +89,8 @@ button:focus-visible {
   user-select: "none";
   height: 800px;
   width: 800px;
-  max-height: min(100vw, 60vh);
-  max-width: min(100vw, 60vh);
+  max-height: min(100vw, calc(100vh - 240px));
+  max-width: min(100vw, calc(100vh - 240px));
 }
 
 .clue-bar {
