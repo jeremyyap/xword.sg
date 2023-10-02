@@ -89,8 +89,8 @@ button:focus-visible {
   user-select: "none";
   height: 800px;
   width: 800px;
-  max-height: min(100vw, calc(100vh - 240px));
-  max-width: min(100vw, calc(100vh - 240px));
+  max-height: min(100vw, calc(100vh - 256px));
+  max-width: min(100vw, calc(100vh - 256px));
 }
 
 .clue-bar {
@@ -108,4 +108,11 @@ button:focus-visible {
 
 .clue-arrow {
   padding: 8px 16px;
+}
+
+.header {
+  font-size: 24px;
+  height: 40px;
+  display: flex;
+  justify-content: space-between;
 }

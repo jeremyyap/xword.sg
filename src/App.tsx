@@ -72,8 +72,17 @@ export default function App() {
     }
   }, [inputGrid, solutionGrid]);
 
+  const puzzleDate = new Date();
+
   return (
     <>
+      <div className="header">
+        <span>xword.sg</span>
+        <span>
+          {puzzleDate.getDate()}/{puzzleDate.getMonth() + 1}/
+          {puzzleDate.getFullYear()}
+        </span>
+      </div>
       <CrosswordGrid
         data={crosswordData}
         inputGrid={inputGrid}
