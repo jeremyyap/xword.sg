@@ -315,3 +315,11 @@ resource "aws_cloudwatch_event_target" "every_10AM" {
   rule = "${aws_cloudwatch_event_rule.every_10AM.name}"
   arn = "${aws_lambda_function.publish_crossword.arn}"
 }
+
+resource "aws_lambda_permission" "allow_cloudwatch_to_publish" {
+  statement_id = "AllowExecutionFromCloudWatch"
+  action = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.publish_crossword.function_name
+  principal = "events.amazonaws.com"
+  source_arn = aws_cloudwatch_event_rule.every_10AM.arn
+}
