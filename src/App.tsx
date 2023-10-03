@@ -13,6 +13,7 @@ import Keyboard from "react-simple-keyboard";
 import "react-simple-keyboard/build/css/index.css";
 import useIsMobileBrowser from "./useIsMobileBrowser";
 import Modal from "./Modal";
+import { IconSquareCheck, IconSquareCheckFilled } from "@tabler/icons-react";
 
 type Props = {
   ipuzData: IpuzData;
@@ -36,6 +37,7 @@ export default function App({ ipuzData }: Props) {
   const [completed, setCompleted] = useState(false);
   const [selection, setSelection] = useState(getInitialActiveState(puzzleGrid));
   const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
+  const [isAutoCheckEnabled, setIsAutoCheckEnabled] = useState(false);
 
   const handleInput = useCallback(
     (input: string, cell: CellSelection) => {
@@ -80,10 +82,30 @@ export default function App({ ipuzData }: Props) {
     }
   }, [completed, inputGrid, solutionGrid]);
 
+  const CheckIcon = isAutoCheckEnabled
+    ? IconSquareCheckFilled
+    : IconSquareCheck;
+  const toggleAutoCheck = useCallback(
+    () => setIsAutoCheckEnabled((enabled) => !enabled),
+    [],
+  );
+
   return (
     <>
       <div className="header">
         <span>xword.sg</span>
+        <div
+          onClick={toggleAutoCheck}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            userSelect: "none",
+            cursor: "pointer",
+          }}
+        >
+          <CheckIcon size={40} style={{ marginRight: 4 }} />
+          <span>Check letters</span>
+        </div>
         <span>{ipuzData.title}</span>
       </div>
       <CrosswordGrid
@@ -91,6 +113,7 @@ export default function App({ ipuzData }: Props) {
         inputGrid={inputGrid}
         selection={selection}
         setSelection={setSelection}
+        isAutoCheckEnabled={isAutoCheckEnabled}
       />
       {useIsMobileBrowser() && (
         <Keyboard

@@ -8,6 +8,7 @@ type Props = {
   inputGrid: Array<Array<string>>;
   selection: CellSelection;
   setSelection: (selection: CellSelection) => void;
+  isAutoCheckEnabled: boolean;
 };
 
 export default function CrosswordGrid({
@@ -15,6 +16,7 @@ export default function CrosswordGrid({
   inputGrid,
   selection,
   setSelection,
+  isAutoCheckEnabled,
 }: Props) {
   const {
     dimensions: { height, width },
@@ -101,6 +103,7 @@ export default function CrosswordGrid({
                     ? mappedAcrossClues[row][col]
                     : mappedDownClues[row][col]) === activeClue
                 }
+                isAutoCheckEnabled={isAutoCheckEnabled}
                 onClick={handleClick}
               />
             );

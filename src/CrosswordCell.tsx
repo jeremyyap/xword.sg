@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { CellData } from "./CrosswordData";
 
 type Props = {
@@ -8,21 +9,37 @@ type Props = {
   cellInfo: CellData;
   isActiveCell: boolean;
   isActiveClue: boolean;
+  isAutoCheckEnabled: boolean;
   onClick: (activeCell: { row: number; col: number }) => void;
 };
 
 export default function CrosswordCell({
   row,
   col,
+  answer,
   cellInfo,
   isActiveCell,
   isActiveClue,
   input,
+  isAutoCheckEnabled,
   onClick,
 }: Props) {
+  const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const clueNumber = getClueNumber(cellInfo);
   const isWall = cellInfo === "#";
   let fill = "white";
+
+  useEffect(() => {
+    if (isAutoCheckEnabled) {
+      if (input === "") {
+        setIsCorrect(null);
+      } else {
+        setIsCorrect(input === answer);
+      }
+    } else {
+      setIsCorrect(null);
+    }
+  }, [input, answer, isAutoCheckEnabled]);
 
   const isDarkMode =
     window.matchMedia &&
@@ -48,6 +65,20 @@ export default function CrosswordCell({
   }
 
   const handleClick = () => onClick({ row, col });
+
+  const cross = (
+    <g>
+      <line
+        x1={col}
+        y1={row + 1}
+        x2={col + 1}
+        y2={row}
+        vector-effect="non-scaling-stroke"
+        stroke="red"
+        strokeWidth={2}
+      />
+    </g>
+  );
 
   return (
     <g onClick={isWall ? undefined : handleClick}>
@@ -79,6 +110,7 @@ export default function CrosswordCell({
       >
         {input}
       </text>
+      {isCorrect === false && cross}
     </g>
   );
 }
