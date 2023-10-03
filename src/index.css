@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -83,6 +87,9 @@ button:focus-visible {
   .hg-theme-default .hg-button {
     background-color: rgb(36, 36, 36);
   }
+  div.sidebar {
+    background-color: #444;
+  }
 }
 
 .crossword-grid {
@@ -113,7 +120,7 @@ button:focus-visible {
 .header {
   padding: 8px;
   font-size: 20px;
-  height: 40px;
+  height: 56px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -140,4 +147,52 @@ button:focus-visible {
   position: absolute;
   top: 8px;
   right: 8px;
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  font-size: 20px;
+  user-select: none;
+  cursor: pointer;
+  gap: 4px;
+}
+
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 400px;
+  max-width: 90vw;
+  transform: translateX(-100%);
+  background-color: #ccc;
+  transition: 0.3s ease-in-out transform;
+  text-align: left;
+  padding: 32px;
+  z-index: 100;
+
+  &.open {
+    transform: translateX(0);
+  }
+
+  > a {
+    text-decoration: inherit;
+    color: inherit;
+    cursor: auto;
+  }
+
+  .sidebar-item {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+    gap: 8px;
+    padding: 16px 0;
+    margin: 16px 0;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }

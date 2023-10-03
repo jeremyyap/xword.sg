@@ -13,7 +13,7 @@ import Keyboard from "react-simple-keyboard";
 import "react-simple-keyboard/build/css/index.css";
 import useIsMobileBrowser from "./useIsMobileBrowser";
 import Modal from "./Modal";
-import { IconSquareCheck, IconSquareCheckFilled } from "@tabler/icons-react";
+import Header from "./Header";
 
 type Props = {
   ipuzData: IpuzData;
@@ -82,9 +82,6 @@ export default function App({ ipuzData }: Props) {
     }
   }, [completed, inputGrid, solutionGrid]);
 
-  const CheckIcon = isAutoCheckEnabled
-    ? IconSquareCheckFilled
-    : IconSquareCheck;
   const toggleAutoCheck = useCallback(
     () => setIsAutoCheckEnabled((enabled) => !enabled),
     [],
@@ -92,22 +89,11 @@ export default function App({ ipuzData }: Props) {
 
   return (
     <>
-      <div className="header">
-        <span>xword.sg</span>
-        <div
-          onClick={toggleAutoCheck}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            userSelect: "none",
-            cursor: "pointer",
-          }}
-        >
-          <CheckIcon size={40} style={{ marginRight: 4 }} />
-          <span>Check letters</span>
-        </div>
-        <span>{ipuzData.title}</span>
-      </div>
+      <Header
+        isAutoCheckEnabled={isAutoCheckEnabled}
+        title={ipuzData.title}
+        toggleAutoCheck={toggleAutoCheck}
+      />
       <CrosswordGrid
         data={crosswordData}
         inputGrid={inputGrid}
