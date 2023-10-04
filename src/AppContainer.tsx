@@ -11,7 +11,7 @@ export default function AppContainer() {
     })
       .then((response) => response.json())
       .then((response) => setIpuzData(response));
-  });
+  }, []);
 
   if (ipuzData != null) {
     return <App ipuzData={ipuzData} />;
