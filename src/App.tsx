@@ -115,7 +115,7 @@ export default function App({ ipuzData }: Props) {
       )}
       {isCompleteModalOpen && (
         <Modal
-          text="Congratulations! Come back tomorrow for a new puzzle, hopefully we haven't run out..."
+          text="Congratulations! A new puzzle will be published at 10AM every day (hopefully)"
           onHide={() => setIsCompleteModalOpen(false)}
         />
       )}
