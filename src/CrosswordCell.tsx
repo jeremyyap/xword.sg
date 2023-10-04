@@ -73,7 +73,7 @@ export default function CrosswordCell({
         y1={row + 1}
         x2={col + 1}
         y2={row}
-        vector-effect="non-scaling-stroke"
+        vectorEffect="non-scaling-stroke"
         stroke="red"
         strokeWidth={2}
       />
