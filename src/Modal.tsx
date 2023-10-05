@@ -1,15 +1,19 @@
+import React from "react";
+
 type Props = {
-  text: string;
+  content: React.ReactNode;
   onHide: () => void;
 };
 
-export default function Modal({ text, onHide }: Props) {
+export default function Modal({ content, onHide }: Props) {
   return (
-    <div className="modal">
-      <div className="close-button" onClick={onHide}>
-        &times;
+    <div className="modal-bg" onClick={onHide}>
+      <div className="modal">
+        <div className="close-button" onClick={onHide}>
+          &times;
+        </div>
+        <div>{content}</div>
       </div>
-      <div>{text}</div>
     </div>
   );
 }

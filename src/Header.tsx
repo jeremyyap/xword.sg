@@ -1,4 +1,6 @@
 import {
+  IconCalendarEvent,
+  IconInfoSquare,
   IconMenu2,
   IconSquare,
   IconSquareCheckFilled,
@@ -8,13 +10,15 @@ import Sidebar from "./Sidebar";
 
 type Props = {
   isAutoCheckEnabled: boolean;
-  title: string;
+  openDatepicker: () => void;
+  openInfo: () => void;
   toggleAutoCheck: () => void;
 };
 
 export default function Header({
   isAutoCheckEnabled,
-  title,
+  openDatepicker,
+  openInfo,
   toggleAutoCheck,
 }: Props) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -25,12 +29,18 @@ export default function Header({
   return (
     <>
       <div className="header">
-        <IconMenu2 size={40} className="button" onClick={toggleIsSidebarOpen} visibility={isSidebarOpen ? "hidden" : "visible"} />
+        <IconMenu2
+          size={40}
+          className="button"
+          onClick={toggleIsSidebarOpen}
+          visibility={isSidebarOpen ? "hidden" : "visible"}
+        />
         <div className="button" onClick={toggleAutoCheck}>
           <CheckIcon size={32} />
           <span>Auto-check</span>
         </div>
-        <span>{title}</span>
+        <IconCalendarEvent size={32} onClick={openDatepicker} />
+        <IconInfoSquare size={32} onClick={openInfo} />
       </div>
       <Sidebar
         isSidebarOpen={isSidebarOpen}
