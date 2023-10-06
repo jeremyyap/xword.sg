@@ -51,14 +51,6 @@ export default function App({ ipuzData, puzzleDate, setPuzzleDate }: Props) {
   const [isDatepickerOpen, setIsDatepickerOpen] = useState(false);
   const [isInfoOpen, setIsInfoOpen] = useState(false);
 
-  useEffect(
-    () =>
-      setInputGrid(
-        getInitialState(ipuzData.dimensions.height, ipuzData.dimensions.width),
-      ),
-    [ipuzData],
-  );
-
   const handleInput = useCallback(
     (input: string, cell: CellSelection) => {
       if (completed) {

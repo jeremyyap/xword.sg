@@ -8,11 +8,11 @@ export default function AppContainer() {
   const [ipuzData, setIpuzData] = useState<IpuzData | null>(null);
 
   const today = new Date();
-  console.log(puzzleDate);
+  const dateString = format(puzzleDate, "yyyy-MM-dd");
   const puzzlePath =
     today.toDateString() === puzzleDate.toDateString()
       ? "/crosswords/latest.json"
-      : `/crosswords/${format(puzzleDate, "yyyy-MM-dd")}.json`;
+      : `/crosswords/${dateString}.json`;
 
   useEffect(() => {
     fetch(puzzlePath, {
@@ -26,6 +26,7 @@ export default function AppContainer() {
   if (ipuzData != null) {
     return (
       <App
+        key={ipuzData.title}
         puzzleDate={puzzleDate}
         setPuzzleDate={setPuzzleDate}
         ipuzData={ipuzData}
