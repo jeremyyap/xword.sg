@@ -15,7 +15,7 @@ export default function Sidebar({ isSidebarOpen, handleClose }: Props) {
         onClick={handleClose}
         style={{ position: "absolute", top: 8, right: 8 }}
       />
-      <h2>xword.sg</h2>
+      <h2>xword.sg (Beta)</h2>
       <a href="https://www.github.com/jeremyyap/xword.sg">
         <div className="sidebar-item">
           <IconBrandGit size={32} />
