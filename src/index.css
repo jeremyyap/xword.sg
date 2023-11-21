@@ -212,4 +212,10 @@ button:focus-visible {
       text-decoration: underline;
     }
   }
+
+  .sidebar-profile {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
 }
