@@ -20,15 +20,15 @@ provider "aws" {
 }
 
 provider "aws" {
-  alias = "us-east-1"
+  alias  = "us-east-1"
   region = "us-east-1"
 }
 
 locals {
   mime_types = {
     "html" = "text/html"
-    "css" = "text/css"
-    "js" = "text/javascript"
+    "css"  = "text/css"
+    "js"   = "text/javascript"
   }
 }
 
@@ -37,10 +37,10 @@ resource "aws_route53_zone" "main" {
 }
 
 resource "aws_acm_certificate" "cert" {
-  domain_name       = "xword.sg"
+  domain_name               = "xword.sg"
   subject_alternative_names = ["*.xword.sg"]
-  validation_method = "DNS"
-  provider = aws.us-east-1
+  validation_method         = "DNS"
+  provider                  = aws.us-east-1
 
   lifecycle {
     create_before_destroy = true
@@ -49,11 +49,11 @@ resource "aws_acm_certificate" "cert" {
 
 resource "aws_route53_record" "cert_dns" {
   allow_overwrite = true
-  name =  tolist(aws_acm_certificate.cert.domain_validation_options)[0].resource_record_name
-  records = [tolist(aws_acm_certificate.cert.domain_validation_options)[0].resource_record_value]
-  type = tolist(aws_acm_certificate.cert.domain_validation_options)[0].resource_record_type
-  zone_id = aws_route53_zone.main.zone_id
-  ttl = 60
+  name            = tolist(aws_acm_certificate.cert.domain_validation_options)[0].resource_record_name
+  records         = [tolist(aws_acm_certificate.cert.domain_validation_options)[0].resource_record_value]
+  type            = tolist(aws_acm_certificate.cert.domain_validation_options)[0].resource_record_type
+  zone_id         = aws_route53_zone.main.zone_id
+  ttl             = 60
 }
 
 resource "aws_s3_bucket" "xword_sg" {
@@ -74,7 +74,7 @@ resource "aws_s3_bucket_public_access_block" "www_xword_sg" {
 
 resource "aws_s3_bucket_website_configuration" "xword_sg" {
   bucket = aws_s3_bucket.xword_sg.id
-  
+
   redirect_all_requests_to {
     host_name = "www.xword.sg"
   }
@@ -82,7 +82,7 @@ resource "aws_s3_bucket_website_configuration" "xword_sg" {
 
 resource "aws_s3_bucket_website_configuration" "www_xword_sg" {
   bucket = aws_s3_bucket.www_xword_sg.id
-  
+
   index_document {
     suffix = "index.html"
   }
@@ -92,10 +92,10 @@ resource "aws_s3_object" "dist" {
   for_each = toset([
     for file in fileset("../dist/", "**") : file if !startswith(file, "crosswords")
   ])
-  key    = each.value 
-  bucket = aws_s3_bucket.www_xword_sg.id
-  source = "../dist/${each.value}"
-  etag = filemd5("../dist/${each.value}")
+  key          = each.value
+  bucket       = aws_s3_bucket.www_xword_sg.id
+  source       = "../dist/${each.value}"
+  etag         = filemd5("../dist/${each.value}")
   content_type = lookup(local.mime_types, split(".", each.value)[1])
 }
 
@@ -119,22 +119,22 @@ resource "aws_cloudfront_distribution" "www_xword_sg" {
   aliases = ["www.xword.sg"]
 
   default_cache_behavior {
-    cache_policy_id  = "658327ea-f89d-4fab-a63d-7e88639e58f6"
-    cached_methods   = ["GET", "HEAD"]
-    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
+    cache_policy_id        = "658327ea-f89d-4fab-a63d-7e88639e58f6"
+    cached_methods         = ["GET", "HEAD"]
+    allowed_methods        = ["GET", "HEAD", "OPTIONS"]
     viewer_protocol_policy = "redirect-to-https"
-    target_origin_id = "www.xword.sg"
+    target_origin_id       = "www.xword.sg"
   }
 
   viewer_certificate {
-    acm_certificate_arn = aws_acm_certificate.cert.arn
+    acm_certificate_arn      = aws_acm_certificate.cert.arn
     minimum_protocol_version = "TLSv1.2_2021"
-    ssl_support_method = "sni-only"
+    ssl_support_method       = "sni-only"
   }
 
   restrictions {
     geo_restriction {
-      locations = []
+      locations        = []
       restriction_type = "none"
     }
   }
@@ -160,22 +160,22 @@ resource "aws_cloudfront_distribution" "xword_sg" {
   aliases = ["xword.sg"]
 
   default_cache_behavior {
-    cache_policy_id  = "658327ea-f89d-4fab-a63d-7e88639e58f6"
-    cached_methods   = ["GET", "HEAD"]
-    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
+    cache_policy_id        = "658327ea-f89d-4fab-a63d-7e88639e58f6"
+    cached_methods         = ["GET", "HEAD"]
+    allowed_methods        = ["GET", "HEAD", "OPTIONS"]
     viewer_protocol_policy = "redirect-to-https"
-    target_origin_id = "xword.sg"
+    target_origin_id       = "xword.sg"
   }
 
   viewer_certificate {
-    acm_certificate_arn = aws_acm_certificate.cert.arn
+    acm_certificate_arn      = aws_acm_certificate.cert.arn
     minimum_protocol_version = "TLSv1.2_2021"
-    ssl_support_method = "sni-only"
+    ssl_support_method       = "sni-only"
   }
 
   restrictions {
     geo_restriction {
-      locations = []
+      locations        = []
       restriction_type = "none"
     }
   }
@@ -208,7 +208,7 @@ resource "aws_route53_record" "xword_sg" {
 data "aws_iam_policy_document" "www_xword_sg" {
   statement {
     actions   = ["s3:GetObject"]
-    resources = ["${aws_s3_bucket.www_xword_sg.arn}/*",]
+    resources = ["${aws_s3_bucket.www_xword_sg.arn}/*", ]
 
     principals {
       type        = "AWS"
