@@ -23,7 +23,8 @@ data "aws_iam_policy_document" "xword_sg_dynamodb" {
     sid = "dynamodbtablepolicy"
 
     actions = [
-      "dynamodb:Query"
+      "dynamodb:Query",
+      "dynamodb:PutItem"
     ]
 
     resources = [
