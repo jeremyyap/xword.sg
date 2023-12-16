@@ -143,3 +143,45 @@ resource "aws_api_gateway_integration_response" "post_save_response" {
     EOF
   }
 }
+
+resource "aws_api_gateway_deployment" "xword_saves_api" {
+  rest_api_id = aws_api_gateway_rest_api.xword_saves_api.id
+
+  triggers = {
+    get_api = sha1(jsonencode(aws_api_gateway_integration.get_save_integration.request_templates))
+    put_api = sha1(jsonencode(aws_api_gateway_integration.post_save_integration.request_templates))
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_api_gateway_stage" "xword_saves_api" {
+  deployment_id = aws_api_gateway_deployment.xword_saves_api.id
+  rest_api_id   = aws_api_gateway_rest_api.xword_saves_api.id
+  stage_name    = "production"
+}
+
+resource "aws_api_gateway_domain_name" "api_xword_sg" {
+  certificate_arn = aws_acm_certificate.cert.arn
+  domain_name = "api.xword.sg"
+}
+
+resource "aws_api_gateway_base_path_mapping" "xword_saves_api" {
+  api_id      = aws_api_gateway_rest_api.xword_saves_api.id
+  stage_name  = aws_api_gateway_stage.xword_saves_api.stage_name
+  domain_name = aws_api_gateway_domain_name.api_xword_sg.domain_name
+}
+
+resource "aws_route53_record" "api_xword_sg" {
+  name = aws_api_gateway_domain_name.api_xword_sg.domain_name
+  type = "A"
+  zone_id = aws_route53_zone.main.zone_id
+
+  alias {
+    evaluate_target_health = true
+    name                   = aws_api_gateway_domain_name.api_xword_sg.cloudfront_domain_name
+    zone_id                = aws_api_gateway_domain_name.api_xword_sg.cloudfront_zone_id
+  }
+}
