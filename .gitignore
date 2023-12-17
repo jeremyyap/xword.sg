@@ -27,6 +27,6 @@ dist-ssr
 .terraform/
 terraform.tfstate
 terraform.tfstate.backup
-lambda_function.zip
+*.zip
 
 public/crosswords/*

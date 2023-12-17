@@ -1,18 +1,18 @@
 # Lambda function to publish new crossword daily
-data "archive_file" "lambda_zip" {
+data "archive_file" "lambda_publish_crossword" {
   type        = "zip"
   source_dir  = "${path.module}/../lambda"
-  output_path = "${path.module}/lambda_function.zip"
+  output_path = "${path.module}/lambda_publish_crossword.zip"
 }
 
 resource "aws_lambda_function" "publish_crossword" {
-  filename      = data.archive_file.lambda_zip.output_path
+  filename      = data.archive_file.lambda_publish_crossword.output_path
   function_name = "publish_crossword"
   role          = aws_iam_role.publisher.arn
   handler       = "main.lambda_handler"
   timeout       = 10
 
-  source_code_hash = data.archive_file.lambda_zip.output_base64sha256
+  source_code_hash = data.archive_file.lambda_publish_crossword.output_base64sha256
 
   runtime = "python3.11"
 
