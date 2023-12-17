@@ -1,7 +1,7 @@
 # Lambda function to publish new crossword daily
 data "archive_file" "lambda_publish_crossword" {
   type        = "zip"
-  source_dir  = "${path.module}/../lambda"
+  source_dir  = "${path.module}/../lambda_publish_crossword"
   output_path = "${path.module}/lambda_publish_crossword.zip"
 }
 
