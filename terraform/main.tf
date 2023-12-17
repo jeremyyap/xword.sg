@@ -4,6 +4,11 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 5.19.0"
     }
+
+    auth0 = {
+      source  = "auth0/auth0"
+      version = ">= 1.1.1"
+    }
   }
 
   required_version = ">= 0.14.9"
