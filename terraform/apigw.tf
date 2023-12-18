@@ -1,5 +1,3 @@
-data "aws_region" "current" {}
-
 resource "aws_api_gateway_rest_api" "xword_saves_api" {
   name        = "xword_saves_api"
   description = "xword.sg Saves API"

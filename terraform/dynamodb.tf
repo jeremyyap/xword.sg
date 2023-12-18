@@ -42,7 +42,10 @@ resource "aws_iam_role" "xword_sg_dynamodb" {
       {
         "Action": "sts:AssumeRole",
         "Principal": {
-          "Service": "apigateway.amazonaws.com"
+          "Service": [
+            "apigateway.amazonaws.com",
+            "lambda.amazonaws.com"
+          ]
         },
         "Effect": "Allow",
         "Sid": "iamroletrustpolicy"

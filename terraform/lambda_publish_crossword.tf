@@ -41,6 +41,7 @@ resource "aws_iam_role" "publisher" {
 }
 EOF
 }
+
 resource "aws_iam_policy" "publisher_s3_bucket_access" {
   name   = "crossword-publisher-s3-bucket-access"
   policy = <<EOF
