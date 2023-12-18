@@ -20,7 +20,8 @@ resource "aws_api_gateway_method" "get_save" {
   rest_api_id   = aws_api_gateway_rest_api.xword_saves_api.id
   resource_id   = aws_api_gateway_resource.save.id
   http_method   = "GET"
-  authorization = "NONE"
+  authorization = "CUSTOM"
+  authorizer_id = aws_api_gateway_authorizer.auth0_authorizer.id
 }
 
 resource "aws_api_gateway_integration" "get_save_integration" {
@@ -83,7 +84,8 @@ resource "aws_api_gateway_method" "post_save" {
   rest_api_id   = aws_api_gateway_rest_api.xword_saves_api.id
   resource_id   = aws_api_gateway_resource.save.id
   http_method   = "POST"
-  authorization = "NONE"
+  authorization = "CUSTOM"
+  authorizer_id = aws_api_gateway_authorizer.auth0_authorizer.id
 }
 
 resource "aws_api_gateway_integration" "post_save_integration" {
