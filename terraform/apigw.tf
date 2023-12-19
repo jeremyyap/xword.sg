@@ -48,7 +48,7 @@ resource "aws_api_gateway_integration" "get_save_integration" {
               "S": "$input.params('date')"
           },
           ":userId": {
-              "S": "test@example.com"
+              "S": "$context.authorizer.principalId"
           }
         }
       }
@@ -107,7 +107,7 @@ resource "aws_api_gateway_integration" "post_save_integration" {
         "TableName": "${aws_dynamodb_table.xword_sg_data.name}",
         "Item": {
           "userId": {
-            "S": "test@example.com"
+            "S": "$context.authorizer.principalId"
           },
           "date": {
             "S": "$input.params('date')"
