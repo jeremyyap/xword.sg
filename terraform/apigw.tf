@@ -1,3 +1,7 @@
+resource "aws_api_gateway_account" "demo" {
+  cloudwatch_role_arn = aws_iam_role.apigw.arn
+}
+
 resource "aws_api_gateway_rest_api" "xword_saves_api" {
   name        = "xword_saves_api"
   description = "xword.sg Saves API"
@@ -31,7 +35,7 @@ resource "aws_api_gateway_integration" "get_save_integration" {
   type                    = "AWS"
   integration_http_method = "POST"
   uri                     = "arn:aws:apigateway:${data.aws_region.current.name}:dynamodb:action/Query"
-  credentials             = aws_iam_role.xword_sg_dynamodb.arn
+  credentials             = aws_iam_role.apigw.arn
   
   request_templates = {
     "application/json" = <<EOF
@@ -95,7 +99,7 @@ resource "aws_api_gateway_integration" "post_save_integration" {
   type                    = "AWS"
   integration_http_method = "POST"
   uri                     = "arn:aws:apigateway:${data.aws_region.current.name}:dynamodb:action/PutItem"
-  credentials             = aws_iam_role.xword_sg_dynamodb.arn
+  credentials             = aws_iam_role.apigw.arn
   
   request_templates = {
     "application/json" = <<EOF
@@ -109,7 +113,7 @@ resource "aws_api_gateway_integration" "post_save_integration" {
             "S": "$input.params('date')"
           },
           "state": {
-            "S": "$input.path('$.state')"
+            "S": $input.json('$.state')
           }
         }
       }
@@ -186,6 +190,11 @@ resource "aws_api_gateway_integration_response" "options_save_response" {
     "method.response.header.Access-Control-Allow-Methods" = "'*'"
     "method.response.header.Access-Control-Allow-Origin" = "'*'"
   }
+
+  
+  response_templates = {
+    "application/json" = ""
+  }
 }
 
 resource "aws_api_gateway_deployment" "xword_saves_api" {
@@ -205,6 +214,17 @@ resource "aws_api_gateway_stage" "xword_saves_api" {
   deployment_id = aws_api_gateway_deployment.xword_saves_api.id
   rest_api_id   = aws_api_gateway_rest_api.xword_saves_api.id
   stage_name    = "production"
+}
+
+resource "aws_api_gateway_method_settings" "xword_saves_api" {
+  rest_api_id = aws_api_gateway_rest_api.xword_saves_api.id
+  stage_name  = aws_api_gateway_stage.xword_saves_api.stage_name
+  method_path = "*/*"
+
+  settings {
+    metrics_enabled = true
+    logging_level   = "INFO"
+  }
 }
 
 resource "aws_api_gateway_domain_name" "api_xword_sg" {

@@ -33,30 +33,8 @@ data "aws_iam_policy_document" "xword_sg_dynamodb" {
   }
 }
 
-resource "aws_iam_role" "xword_sg_dynamodb" {
-  name               = "xword_sg_dynamodb"
-  assume_role_policy = <<-EOF
-  {
-    "Version": "2012-10-17",
-    "Statement": [
-      {
-        "Action": "sts:AssumeRole",
-        "Principal": {
-          "Service": [
-            "apigateway.amazonaws.com",
-            "lambda.amazonaws.com"
-          ]
-        },
-        "Effect": "Allow",
-        "Sid": "iamroletrustpolicy"
-      }
-    ]
-  }
-  EOF
-}
-
 resource "aws_iam_role_policy" "xword_sg_dynamodb" {
   name = "xword_sg_dynamodb"
-  role = aws_iam_role.xword_sg_dynamodb.id
+  role = aws_iam_role.apigw.id
   policy = data.aws_iam_policy_document.xword_sg_dynamodb.json
 }
