@@ -1,5 +1,5 @@
 export type CrosswordData = {
-  id: string,
+  id: string;
   dimensions: {
     width: number;
     height: number;

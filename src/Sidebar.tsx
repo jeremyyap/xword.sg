@@ -39,7 +39,12 @@ export default function Sidebar({ isSidebarOpen, handleClose }: Props) {
         </div>
       )}
       {isAuthenticated && !isLoading && (
-        <div className="sidebar-item" onClick={() => logout()}>
+        <div
+          className="sidebar-item"
+          onClick={() =>
+            logout({ logoutParams: { returnTo: window.location.origin } })
+          }
+        >
           <IconLogout size={32} />
           Logout
         </div>

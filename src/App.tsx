@@ -56,23 +56,31 @@ export default function App({ ipuzData, puzzleDate, setPuzzleDate }: Props) {
   const [isSyncing, setIsSyncing] = useState(true);
   const [isDirty, setIsDirty] = useState(false);
 
-  const { getAccessTokenSilently, isAuthenticated }= useAuth0();
+  const { getAccessTokenSilently, isAuthenticated, isLoading } = useAuth0();
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (isLoading) {
       return;
     }
 
-    getAccessTokenSilently().then(accessToken => fetch(`https://api.xword.sg/saves/${id}`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`
-      }
-    }))
-      .then(response => response.json())
-      .then(response => {
+    if (!isAuthenticated) {
+      setIsSyncing(false);
+      return;
+    }
+
+    getAccessTokenSilently()
+      .then((accessToken) =>
+        fetch(`https://api.xword.sg/saves/${id}`, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }),
+      )
+      .then((response) => response.json())
+      .then((response) => {
         const result = response.Items[0];
         if (result != null) {
           const state = JSON.parse(result.state.S);
@@ -80,30 +88,40 @@ export default function App({ ipuzData, puzzleDate, setPuzzleDate }: Props) {
         }
         setIsSyncing(false);
       });
-  }, [id, isAuthenticated, getAccessTokenSilently])
+  }, [id, isAuthenticated, isLoading, getAccessTokenSilently]);
 
-  const debouncedInputGrid = useDebounce(inputGrid, 5000);
-  const debouncedIsDirty = useDebounce(isDirty, 5000);
+  const debouncedInputGrid = useDebounce(inputGrid, 2000);
+  const debouncedIsDirty = useDebounce(isDirty, 2000);
   useEffect(() => {
     if (!debouncedIsDirty || !isAuthenticated) {
       return;
     }
 
     setIsSyncing(true);
-    getAccessTokenSilently().then(accessToken => fetch(`https://api.xword.sg/saves/${id}`, {
-      method: 'POST',
-      body: JSON.stringify({
-        state: JSON.stringify({ inputGrid: debouncedInputGrid })
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`
-      }
-    })).then(() => {
-      setIsSyncing(false);
-      setIsDirty(false);
-    });
-  }, [id, isAuthenticated, debouncedIsDirty, debouncedInputGrid, getAccessTokenSilently]);
+    getAccessTokenSilently()
+      .then((accessToken) =>
+        fetch(`https://api.xword.sg/saves/${id}`, {
+          method: "POST",
+          body: JSON.stringify({
+            state: JSON.stringify({ inputGrid: debouncedInputGrid }),
+          }),
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }),
+      )
+      .then(() => {
+        setIsSyncing(false);
+        setIsDirty(false);
+      });
+  }, [
+    id,
+    isAuthenticated,
+    debouncedIsDirty,
+    debouncedInputGrid,
+    getAccessTokenSilently,
+  ]);
 
   const handleInput = useCallback(
     (input: string, cell: CellSelection) => {
@@ -142,12 +160,12 @@ export default function App({ ipuzData, puzzleDate, setPuzzleDate }: Props) {
 
   useEffect(() => {
     if (checkGrid(inputGrid, solutionGrid)) {
-      if (!completed) {
+      if (!completed && isDirty) {
         setIsCompleteModalOpen(true);
       }
       setCompleted(true);
     }
-  }, [completed, inputGrid, solutionGrid]);
+  }, [completed, isDirty, inputGrid, solutionGrid]);
 
   const toggleAutoCheck = useCallback(
     () => setIsAutoCheckEnabled((enabled) => !enabled),
@@ -169,6 +187,7 @@ export default function App({ ipuzData, puzzleDate, setPuzzleDate }: Props) {
         setSelection={setSelection}
         isAutoCheckEnabled={isAutoCheckEnabled}
       />
+      {isSyncing && "Syncing..."}
       {useIsMobileBrowser() && (
         <Keyboard
           layout={{
