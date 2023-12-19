@@ -1,3 +1,0 @@
-[submodule "lambda_auth0_authorizer"]
-	path = lambda_auth0_authorizer
-	url = org-18199888@github.com:auth0-samples/jwt-rsa-aws-custom-authorizer.git
