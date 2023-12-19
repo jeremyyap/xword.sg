@@ -30,4 +30,3 @@ terraform.tfstate.backup
 *.zip
 
 public/crosswords/*
-lambda_auth0_authorizer/
