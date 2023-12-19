@@ -10,7 +10,7 @@ const getPolicyDocument = (effect, resource) => {
         Statement: [{
             Action: 'execute-api:Invoke', // default action
             Effect: effect,
-            Resource: resource,
+            Resource: process.env.AWS_RESOURCE_ARN,
         }]
     };
     return policyDocument;

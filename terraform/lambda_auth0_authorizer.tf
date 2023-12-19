@@ -1,4 +1,4 @@
-# Lambda function to publish new crossword daily
+# Lambda function to authorize with auth0
 data "archive_file" "lambda_auth0_authorizer" {
   type        = "zip"
   source_dir  = "${path.module}/../lambda_auth0_authorizer"
@@ -19,6 +19,7 @@ resource "aws_lambda_function" "auth0_authorizer" {
   environment {
     variables = {
       AUDIENCE = auth0_resource_server.api_xword_sg.identifier
+      AWS_RESOURCE_ARN = "${aws_api_gateway_rest_api.xword_saves_api.execution_arn}/*/*/*"
       JWKS_URI = "https://dev-wzadxrbi8nvn8iuk.us.auth0.com/.well-known/jwks.json"
       TOKEN_ISSUER = "https://dev-wzadxrbi8nvn8iuk.us.auth0.com/"
     }
