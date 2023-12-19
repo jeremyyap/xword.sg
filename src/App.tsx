@@ -17,6 +17,8 @@ import Header from "./Header";
 import DatePicker from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";
+import { useAuth0 } from "@auth0/auth0-react";
+import { useDebounce } from "./utils";
 
 type Props = {
   ipuzData: IpuzData;
@@ -30,6 +32,7 @@ const MAX_DATE = new Date();
 export default function App({ ipuzData, puzzleDate, setPuzzleDate }: Props) {
   const crosswordData = useCrosswordData(ipuzData);
   const {
+    id,
     dimensions: { height, width },
     puzzle: puzzleGrid,
     solution: solutionGrid,
@@ -50,6 +53,57 @@ export default function App({ ipuzData, puzzleDate, setPuzzleDate }: Props) {
   const [isAutoCheckEnabled, setIsAutoCheckEnabled] = useState(false);
   const [isDatepickerOpen, setIsDatepickerOpen] = useState(false);
   const [isInfoOpen, setIsInfoOpen] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(true);
+  const [isDirty, setIsDirty] = useState(false);
+
+  const { getAccessTokenSilently, isAuthenticated }= useAuth0();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      return;
+    }
+
+    getAccessTokenSilently().then(accessToken => fetch(`https://api.xword.sg/saves/${id}`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`
+      }
+    }))
+      .then(response => response.json())
+      .then(response => {
+        const result = response.Items[0];
+        if (result != null) {
+          const state = JSON.parse(result.state.S);
+          setInputGrid(state.inputGrid);
+        }
+        setIsSyncing(false);
+      });
+  }, [id, isAuthenticated, getAccessTokenSilently])
+
+  const debouncedInputGrid = useDebounce(inputGrid, 5000);
+  const debouncedIsDirty = useDebounce(isDirty, 5000);
+  useEffect(() => {
+    if (!debouncedIsDirty || !isAuthenticated) {
+      return;
+    }
+
+    setIsSyncing(true);
+    getAccessTokenSilently().then(accessToken => fetch(`https://api.xword.sg/saves/${id}`, {
+      method: 'POST',
+      body: JSON.stringify({
+        state: JSON.stringify({ inputGrid: debouncedInputGrid })
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`
+      }
+    })).then(() => {
+      setIsSyncing(false);
+      setIsDirty(false);
+    });
+  }, [id, isAuthenticated, debouncedIsDirty, debouncedInputGrid, getAccessTokenSilently]);
 
   const handleInput = useCallback(
     (input: string, cell: CellSelection) => {
@@ -63,6 +117,7 @@ export default function App({ ipuzData, puzzleDate, setPuzzleDate }: Props) {
         newInputGrid[row][col] = input;
         return newInputGrid;
       });
+      setIsDirty(true);
     },
     [completed],
   );
