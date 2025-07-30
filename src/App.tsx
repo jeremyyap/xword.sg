@@ -202,7 +202,10 @@ export default function App({ ipuzData, puzzleDate, setPuzzleDate }: Props) {
       )}
       {isCompleteModalOpen && (
         <Modal
-          content="Congratulations! A new puzzle will be published at 10AM every day (hopefully)"
+          content={<>
+            <p>Congratulations! New puzzles are published at 10AM every day.</p>
+            <p>Join the <a href="https://t.me/xwordsg" target="_blank">xword.sg Telegram channel</a> to receive notifications.</p>
+          </>}
           onHide={() => setIsCompleteModalOpen(false)}
         />
       )}

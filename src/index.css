@@ -26,11 +26,6 @@
 
 a {
   font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #747bff;
 }
 
 body {
@@ -62,34 +57,6 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    color: rgba(255, 255, 255, 0.87);
-    background-color: #242424;
-  }
-  a:hover {
-    color: #535bf2;
-  }
-  button {
-    background-color: #1a1a1a;
-  }
-  .hg-theme-default.react-simple-keyboard {
-    background-color: rgb(64, 64, 64);
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    max-width: 600px;
-    margin: 0 auto;
-  }
-  .hg-theme-default .hg-button {
-    background-color: rgb(36, 36, 36);
-  }
-  div.sidebar {
-    background-color: #444;
-  }
 }
 
 .crossword-grid {
@@ -149,11 +116,11 @@ button:focus-visible {
   width: 90vw;
   max-width: 600px;
   transform: translate(-50%, 0);
-  background-color: #666;
-  color: white;
+  background-color: #fff;
   margin: auto;
   padding: 56px 40px;
-  box-shadow: 5px 5px rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  box-shadow: rgba(0, 0, 0, 0.3) 0px 3px 12px -1px
 }
 
 .close-button {
@@ -217,5 +184,34 @@ button:focus-visible {
     display: flex;
     align-items: center;
     gap: 16px;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color: rgba(255, 255, 255, 0.87);
+    background-color: #242424;
+  }
+  button {
+    background-color: #1a1a1a;
+  }
+  .hg-theme-default.react-simple-keyboard {
+    background-color: rgb(64, 64, 64);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .hg-theme-default .hg-button {
+    background-color: rgb(36, 36, 36);
+  }
+  div.sidebar {
+    background-color: #444;
+  }
+  .modal {
+    background-color: #424242;
+    color: white;
   }
 }
