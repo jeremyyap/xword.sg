@@ -46,12 +46,12 @@ export default function useCrosswordData(data: IpuzData): CrosswordData {
       });
     });
 
-    const { id, dimensions, puzzle, solution } = data;
+    const { title, dimensions, puzzle, solution } = data;
     const acrossClues = Object.fromEntries(data.clues.Across);
     const downClues = Object.fromEntries(data.clues.Down);
 
     return {
-      id,
+      title,
       dimensions,
       puzzle,
       solution,
@@ -80,7 +80,6 @@ function getClueNumber(
 }
 
 export type IpuzData = {
-  id: string;
   origin: string;
   version: string;
   kind: Array<string>;

@@ -32,7 +32,7 @@ const MAX_DATE = new Date();
 export default function App({ ipuzData, puzzleDate, setPuzzleDate }: Props) {
   const crosswordData = useCrosswordData(ipuzData);
   const {
-    id,
+    title,
     dimensions: { height, width },
     puzzle: puzzleGrid,
     solution: solutionGrid,
@@ -70,7 +70,7 @@ export default function App({ ipuzData, puzzleDate, setPuzzleDate }: Props) {
 
     getAccessTokenSilently()
       .then((accessToken) =>
-        fetch(`https://api.xword.sg/saves/${id}`, {
+        fetch(`https://api.xword.sg/saves/${title}`, {
           method: "GET",
           headers: {
             Accept: "application/json",
@@ -88,7 +88,7 @@ export default function App({ ipuzData, puzzleDate, setPuzzleDate }: Props) {
         }
         setIsSyncing(false);
       });
-  }, [id, isAuthenticated, isLoading, getAccessTokenSilently]);
+  }, [title, isAuthenticated, isLoading, getAccessTokenSilently]);
 
   const debouncedInputGrid = useDebounce(inputGrid, 2000);
   const debouncedIsDirty = useDebounce(isDirty, 2000);
@@ -100,7 +100,7 @@ export default function App({ ipuzData, puzzleDate, setPuzzleDate }: Props) {
     setIsSyncing(true);
     getAccessTokenSilently()
       .then((accessToken) =>
-        fetch(`https://api.xword.sg/saves/${id}`, {
+        fetch(`https://api.xword.sg/saves/${title}`, {
           method: "POST",
           body: JSON.stringify({
             state: JSON.stringify({ inputGrid: debouncedInputGrid }),
@@ -116,7 +116,7 @@ export default function App({ ipuzData, puzzleDate, setPuzzleDate }: Props) {
         setIsDirty(false);
       });
   }, [
-    id,
+    title,
     isAuthenticated,
     debouncedIsDirty,
     debouncedInputGrid,
