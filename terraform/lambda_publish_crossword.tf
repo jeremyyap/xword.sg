@@ -5,6 +5,9 @@ data "archive_file" "lambda_publish_crossword" {
   output_path = "${path.module}/lambda_publish_crossword.zip"
 }
 
+variable "TELEGRAM_BOT_TOKEN" {}
+variable "TELEGRAM_CHAT_ID" {}
+
 resource "aws_lambda_function" "publish_crossword" {
   filename      = data.archive_file.lambda_publish_crossword.output_path
   function_name = "publish_crossword"
@@ -19,6 +22,8 @@ resource "aws_lambda_function" "publish_crossword" {
   environment {
     variables = {
       CLOUDFRONT_DISTRIBUTION_ID = aws_cloudfront_distribution.www_xword_sg.id
+      TELEGRAM_BOT_TOKEN = var.TELEGRAM_BOT_TOKEN
+      TELEGRAM_CHAT_ID = var.TELEGRAM_CHAT_ID
     }
   }
 }
