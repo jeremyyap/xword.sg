@@ -26,7 +26,7 @@ type Props = {
   setPuzzleDate: (date: Date) => void;
 };
 
-const MIN_DATE = new Date(2023, 9, 3); // October 3rd 2023
+const MIN_DATE = new Date(2025, 6, 7);
 const MAX_DATE = new Date();
 
 export default function App({ ipuzData, puzzleDate, setPuzzleDate }: Props) {
@@ -230,9 +230,8 @@ export default function App({ ipuzData, puzzleDate, setPuzzleDate }: Props) {
         <Modal
           content={
             <>
-              <h3>Info</h3>
-              <p>{ipuzData.title}</p>
-              <p>{ipuzData.author}</p>
+              <h3>{ipuzData.title}</h3>
+              <p>By {ipuzData.author}</p>
             </>
           }
           onHide={() => setIsInfoOpen(false)}
