@@ -1,27 +1,38 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { IpuzData } from "./useCrosswordData";
 import App from "./App";
 import { format } from "date-fns";
 
 export default function AppContainer() {
-  const [puzzleDate, setPuzzleDate] = useState<Date>(new Date());
-  const [ipuzData, setIpuzData] = useState<IpuzData | null>(null);
+  const urlParams = new URLSearchParams(window.location.search);
+  const titleParam = urlParams.get('t') ?? 'latest';
 
-  const today = new Date();
-  const dateString = format(puzzleDate, "yyyy-MM-dd");
-  const puzzlePath =
-    today.toDateString() === puzzleDate.toDateString()
-      ? "/crosswords/latest.json"
-      : `/crosswords/${dateString}.json`;
+  const [ipuzData, setIpuzData] = useState<IpuzData | null>(null);
+  const [puzzleTitle, setPuzzleTitle] = useState<string>(titleParam);
+
+  const puzzleDate = useMemo(() => {
+    const date = new Date(titleParam);
+    return isNaN(date.getTime()) ? new Date() : date; 
+  }, [titleParam]);
+
+  const setPuzzleDate = useCallback((newDate: Date) => {
+    const dateString = format(newDate, "yyyy-MM-dd");
+    setPuzzleTitle(dateString);
+
+    const newUrl = new URL(window.location.href)
+    newUrl.searchParams.set('t', dateString);
+    window.history.replaceState({}, '', newUrl);
+  }, []);
 
   useEffect(() => {
-    fetch(puzzlePath, {
+    fetch(`/crosswords/${puzzleTitle}.json`, {
       method: "GET",
       mode: "no-cors",
     })
       .then((response) => response.json())
-      .then((response) => setIpuzData(response));
-  }, [puzzlePath]);
+      .then((response) => setIpuzData(response))
+      .catch(() => setPuzzleTitle('latest'));
+  }, [puzzleTitle]);
 
   if (ipuzData != null) {
     return (
