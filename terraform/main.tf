@@ -61,10 +61,6 @@ resource "aws_route53_record" "cert_dns" {
   ttl             = 60
 }
 
-resource "aws_s3_bucket" "xword_sg" {
-  bucket = "xword.sg"
-}
-
 resource "aws_s3_bucket" "queue_xword_sg" {
   bucket = "queue.xword.sg"
 }
@@ -75,14 +71,6 @@ resource "aws_s3_bucket" "www_xword_sg" {
 
 resource "aws_s3_bucket_public_access_block" "www_xword_sg" {
   bucket = aws_s3_bucket.www_xword_sg.id
-}
-
-resource "aws_s3_bucket_website_configuration" "xword_sg" {
-  bucket = aws_s3_bucket.xword_sg.id
-
-  redirect_all_requests_to {
-    host_name = "www.xword.sg"
-  }
 }
 
 resource "aws_s3_bucket_website_configuration" "www_xword_sg" {
@@ -147,7 +135,7 @@ resource "aws_cloudfront_distribution" "www_xword_sg" {
 
 resource "aws_cloudfront_distribution" "xword_sg" {
   origin {
-    domain_name = aws_s3_bucket.xword_sg.website_endpoint
+    domain_name = aws_s3_bucket.www_xword_sg.website_endpoint
     origin_id   = "xword.sg"
 
     custom_origin_config {
