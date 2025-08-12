@@ -172,6 +172,25 @@ export default function App({ ipuzData, puzzleDate, setPuzzleDate }: Props) {
     [],
   );
 
+  const onShare = useCallback(
+    async () => {
+      const url = `https://xword.sg/?t=${ipuzData.title}`;
+      const shareData = {
+          title: `XWord for ${ipuzData.title}`,
+          text: "Check out this XWord puzzle!",
+          url,
+        }
+      if (navigator.share && navigator.canShare(shareData)) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(url).then(
+          () => alert("Link copied to clipboard")
+        );
+      }
+    },
+    [ipuzData],
+  );
+
   return (
     <>
       <Header
@@ -205,6 +224,7 @@ export default function App({ ipuzData, puzzleDate, setPuzzleDate }: Props) {
           content={<>
             <p>Congratulations! New puzzles are published at 10AM every day.</p>
             <p>Join the <a href="https://t.me/xwordsg" target="_blank">xword.sg Telegram channel</a> to receive notifications.</p>
+            <p><a href="#" onClick={onShare}>Share this puzzle</a></p>
           </>}
           onHide={() => setIsCompleteModalOpen(false)}
         />
