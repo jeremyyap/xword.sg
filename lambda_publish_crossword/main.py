@@ -50,7 +50,7 @@ def lambda_handler(event, context):
         response = http.request("GET", f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage", fields={
             'chat_id': TELEGRAM_CHAT_ID,
             'parse_mode': 'Markdown',
-            'text': f"New XWord published: [{date_str}](https://xword.sg)"
+            'text': f"New XWord published: [{date_str}](https://xword.sg/?t={key})"
         })
         logger.info(response.data)
 
