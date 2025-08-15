@@ -84,6 +84,10 @@ export default function CrosswordGrid({
     puzzleGrid,
   ]);
 
+  const toggleOrientation = useCallback(() => {
+    setSelection({ row: activeRow, col: activeCol, horizontal: !horizontal})
+  }, [activeCol, activeRow, horizontal, setSelection]);
+
   return (
     <>
       <svg viewBox={`0 0 ${width} ${height}`} className="crossword-grid">
@@ -114,7 +118,7 @@ export default function CrosswordGrid({
         <div className="clue-arrow" onClick={goToPreviousClue}>
           &#10094;
         </div>
-        <span className="clue-text">
+        <span className="clue-text" onClick={toggleOrientation}>
           <strong>
             {activeClue}
             {horizontal ? "A" : "D"}
