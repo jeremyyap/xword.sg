@@ -143,20 +143,22 @@ export default function App({ ipuzData, puzzleDate, setPuzzleDate }: Props) {
   const handleKeyboardPress = useCallback(
     (button: string) => {
       if (button === "{bksp}") {
-        setSelection((selection) => {
-          const newSelection = getPreviousCell(puzzleGrid, selection);
-          handleInput("", newSelection);
-          return newSelection;
-        });
+        const currentCellValue = inputGrid[selection.row][selection.col];
+        if (currentCellValue === '') {
+          handleInput("", getPreviousCell(puzzleGrid, selection));
+          setSelection(getPreviousCell(puzzleGrid, selection));
+        } else {
+          handleInput("", selection);
+        }
       } else {
         handleInput(button, selection);
         setSelection((selection) => getNextCell(puzzleGrid, selection));
       }
     },
-    [handleInput, selection, puzzleGrid],
+    [handleInput, selection, inputGrid, puzzleGrid],
   );
 
-  useKeydownListener(handleInput, puzzleGrid, selection, setSelection);
+  useKeydownListener(handleInput, inputGrid, puzzleGrid, selection, setSelection);
 
   useEffect(() => {
     if (checkGrid(inputGrid, solutionGrid)) {

@@ -32,11 +32,11 @@ export function getInitialActiveState(
 }
 
 export function getNextCell(
-  grid: Array<Array<CellData>>,
+  puzzleGrid: Array<Array<CellData>>,
   current: CellSelection,
 ): CellSelection {
-  const width = grid[0].length;
-  const height = grid.length;
+  const width = puzzleGrid[0].length;
+  const height = puzzleGrid.length;
   let { row, col } = current;
   const { horizontal } = current;
 
@@ -46,14 +46,14 @@ export function getNextCell(
       if (col === 0) {
         row = (row + 1) % height;
       }
-    } while (grid[row][col] == "#");
+    } while (puzzleGrid[row][col] == "#");
   } else {
     do {
       row = (row + 1) % height;
       if (row === 0) {
         col = (col + 1) % width;
       }
-    } while (grid[row][col] == "#");
+    } while (puzzleGrid[row][col] == "#");
   }
   return { row, col, horizontal };
 }

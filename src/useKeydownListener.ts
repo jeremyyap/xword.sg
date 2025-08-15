@@ -4,6 +4,7 @@ import { getNextCell, getPreviousCell } from "./gridUtils";
 
 export default function useKeydownListener(
   handleInput: (input: string, cell: CellSelection) => void,
+  inputGrid: Array<Array<CellData>>,
   puzzleGrid: Array<Array<CellData>>,
   selection: CellSelection,
   setSelection: React.Dispatch<React.SetStateAction<CellSelection>>,
@@ -41,8 +42,14 @@ export default function useKeydownListener(
       }
 
       if (e.code === "Backspace") {
-        handleInput("", selection);
-        setSelection(getPreviousCell(puzzleGrid, selection));
+        const currentCellValue = inputGrid[selection.row][selection.col];
+
+        if (currentCellValue === '') {
+          handleInput("", getPreviousCell(puzzleGrid, selection));
+          setSelection(getPreviousCell(puzzleGrid, selection));
+        } else {
+          handleInput("", selection);
+        }
       }
 
       if (/^[a-z0-9]$/i.test(e.key)) {
@@ -50,7 +57,7 @@ export default function useKeydownListener(
         setSelection((selection) => getNextCell(puzzleGrid, selection));
       }
     },
-    [handleInput, puzzleGrid, selection, setSelection],
+    [handleInput, inputGrid, puzzleGrid, selection, setSelection],
   );
 
   useEffect(() => {
