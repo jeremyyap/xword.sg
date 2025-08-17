@@ -111,6 +111,7 @@ export default function CrosswordCell({
         {input}
       </text>
       {isCorrect === false && cross}
+      {getCellDecoration(cellInfo, row, col)}
     </g>
   );
 }
@@ -125,4 +126,13 @@ function getClueNumber(cellInfo: CellData): number | null {
   }
 
   return cellInfo === 0 ? null : cellInfo;
+}
+
+function getCellDecoration(cellInfo: CellData, row: number, col: number): JSX.Element | null {
+  if (cellInfo instanceof Object) {
+    if (cellInfo.style.shapebg === 'circle') {
+      return <circle cx={col + 0.5} cy={row + 0.5} r={0.5} fill="none" stroke="black" stroke-width={0.01} />
+    }
+  }
+  return null;
 }
